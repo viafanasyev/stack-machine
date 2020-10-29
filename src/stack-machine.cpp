@@ -148,16 +148,18 @@ static byte processNextOperation(StackMachine* stackMachine, FILE* input) {
  * @param[in] outputFileName resulting assembly file name
  * @return 0, if assembly finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
- *         ERR_INVALID_REGISTER, if invalid register was met.
+ *         ERR_INVALID_REGISTER, if invalid register was met;
+ *         -1, if any other error occurred (such as invalid input file).
  */
 int assemble(const char* inputFileName, const char* outputFileName) {
     assert(inputFileName != nullptr);
     assert(outputFileName != nullptr);
 
     FILE* input  = fopen(inputFileName,  "r");
+    if (input == nullptr) return -1;
     FILE* output = fopen(outputFileName, "wb");
 
-    constexpr int lineMaxSize = 256;
+    constexpr unsigned int lineMaxSize = 256u;
     char* const lineOriginPtr = (char*)calloc(lineMaxSize, sizeof(char));
     char* line = lineOriginPtr;
     while (fgets(line, lineMaxSize, input)) {
@@ -203,13 +205,15 @@ int assemble(const char* inputFileName, const char* outputFileName) {
  * @param[in] outputFileName resulting source code file name
  * @return 0, if disassembly finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
- *         ERR_INVALID_REGISTER, if invalid register was met.
+ *         ERR_INVALID_REGISTER, if invalid register was met;
+ *         -1, if any other error occurred (such as invalid input file).
  */
 int disassemble(const char* inputFileName, const char* outputFileName) {
     assert(inputFileName != nullptr);
     assert(outputFileName != nullptr);
 
     FILE* input  = fopen(inputFileName,  "rb");
+    if (input == nullptr) return -1;
     FILE* output = fopen(outputFileName, "w");
 
     byte opcode = asmReadOperation(input);
@@ -256,12 +260,15 @@ static bool isError(byte opcode) {
  * @return 0, if program finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
  *         ERR_INVALID_REGISTER, if invalid register was met;
- *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
+ *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack;
+ *         -1, if any other error occurred (such as invalid input file).
  */
 int run(const char* inputFileName) {
     assert(inputFileName != nullptr);
 
     FILE* input = fopen(inputFileName, "rb");
+    if (input == nullptr) return -1;
+
     StackMachine stackMachine;
     constructStack(&stackMachine.stack);
     stackMachine.registers = (double*)calloc(REGISTERS_NUMBER, sizeof(double));

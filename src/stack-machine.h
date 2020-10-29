@@ -11,7 +11,8 @@
  * @param[in] outputFileName resulting assembly file name
  * @return 0, if assembly finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
- *         ERR_INVALID_REGISTER, if invalid register was met.
+ *         ERR_INVALID_REGISTER, if invalid register was met;
+ *         -1, if any other error occurred (such as invalid input file).
  */
 int assemble(const char* inputFileName, const char* outputFileName);
 
@@ -21,7 +22,8 @@ int assemble(const char* inputFileName, const char* outputFileName);
  * @param[in] outputFileName resulting source code file name
  * @return 0, if disassembly finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
- *         ERR_INVALID_REGISTER, if invalid register was met.
+ *         ERR_INVALID_REGISTER, if invalid register was met;
+ *         -1, if any other error occurred (such as invalid input file).
  */
 int disassemble(const char* inputFileName, const char* outputFileName);
 
@@ -31,7 +33,8 @@ int disassemble(const char* inputFileName, const char* outputFileName);
  * @return 0, if program finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
  *         ERR_INVALID_REGISTER, if invalid register was met;
- *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
+ *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack;
+ *         -1, if any other error occurred (such as invalid input file).
  */
 int run(const char* inputFileName);
 

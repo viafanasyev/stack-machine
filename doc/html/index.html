@@ -69,7 +69,8 @@ $(function() {
 Project description</h1>
 <p>This program is developed as a part of ISP RAS course. <br  />
 </p>
-<p>This program contains a simple stack machine. It can assemble, disassemble and run programs. See Run section to find available operations and examples.</p>
+<p>This program contains a register stack machine. It can assemble, disassemble and run programs. See Run section to find available operations and examples.</p>
+<p>NOTE: This program works only on UNIX-like OS.</p>
 <h2><a class="anchor" id="autotoc_md2"></a>
 Structure</h2>
 <ul>
@@ -102,28 +103,42 @@ Stack machine</h3>
 <div class="line">./stack-machine --asm file.txt    # To assemble file with code. Result is put in out.asm</div>
 <div class="line">./stack-machine --disasm file.asm # To disassemble asm file. Result is put in out.disasm</div>
 <div class="line">./stack-machine --run file.asm    # To run asm file</div>
-</div><!-- fragment --><p>Only one asm, disasm and run command could be used.</p>
+</div><!-- fragment --><p>Only one asm, disasm and run command could be used at the time.</p>
 <h4><a class="anchor" id="autotoc_md5"></a>
 Available operations</h4>
 <p>File with code can contain next operations: </p><div class="fragment"><div class="line">IN       # Read double value from console and put it on stack</div>
 <div class="line">OUT      # Pop value from stack and write it in console</div>
 <div class="line">POP      # Pop value from stack</div>
+<div class="line">POP AX   # Pop value from stack and put it into register</div>
 <div class="line">PUSH 1.5 # Put the given value on top of the stack</div>
+<div class="line">PUSH AX  # Put the value from register on top of the stack</div>
 <div class="line">ADD      # Pop two values from stack and put the addition result on top of the stack </div>
 <div class="line">SUB      # Pop two values from stack and put the substraction result on top of the stack</div>
 <div class="line">MUL      # Pop two values from stack and put the multiplication result on top of the stack</div>
 <div class="line">DIV      # Pop two values from stack and put the division result on top of the stack</div>
 <div class="line">SQRT     # Pop one value from stack and put the square root on top of the stack</div>
 <div class="line">HLT      # Stop the program</div>
-</div><!-- fragment --><p>Program should end with <code>HLT</code> command, otherwise it's behaviour is undefined. Each command should be on separate line. <br  />
+</div><!-- fragment --><p>Program should end with <code>HLT</code> command, otherwise it's behaviour is undefined. <br  />
+ Each command should be on separate line. <br  />
+ Possible registers: <code>AX</code>, <code>BX</code>, <code>CX</code>, <code>DX</code>. <br  />
 </p>
 <p>Example program (square root of sum): </p><div class="fragment"><div class="line">IN</div>
 <div class="line">IN</div>
-<div class="line">SUM</div>
+<div class="line">ADD</div>
 <div class="line">SQRT</div>
 <div class="line">OUT</div>
 <div class="line">HLT</div>
-</div><!-- fragment --><p>If the error occurs while running the assembly file (for example, if the stack is empty and <code>POP</code> command is called), then this program fails with assertion and exits by SIGABRT (see <a href="https://github.com/viafanasyev/immortal-stack">https://github.com/viafanasyev/immortal-stack</a> for available error messages at <code>STACK_SECURITY_LEVEL 3</code>). <br  />
+</div><!-- fragment --><p>Example program 2 (square root of the squared value minus 2): </p><div class="fragment"><div class="line">IN</div>
+<div class="line">POP AX</div>
+<div class="line">PUSH AX</div>
+<div class="line">PUSH AX</div>
+<div class="line">MUL</div>
+<div class="line">PUSH 2</div>
+<div class="line">SUB</div>
+<div class="line">SQRT</div>
+<div class="line">OUT</div>
+<div class="line">HLT</div>
+</div><!-- fragment --><p>If the error occurs while running the assembly file (for example, if the stack is empty and <code>POP</code> command is called), then this program fails with assertion and exits by SIGABRT (see <a href="https://github.com/viafanasyev/immortal-stack">https://github.com/viafanasyev/immortal-stack</a> for list available error messages at <code>STACK_SECURITY_LEVEL 3</code>). <br  />
 </p>
 <p>Probably, there will be more advanced error messages in the future.</p>
 <h3><a class="anchor" id="autotoc_md6"></a>

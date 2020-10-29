@@ -4,8 +4,10 @@
 
 This program is developed as a part of ISP RAS course.  
 
-This program contains a simple stack machine. It can assemble, disassemble and run programs. 
+This program contains a register stack machine. It can assemble, disassemble and run programs. 
 See Run section to find available operations and examples.
+
+NOTE: This program works only on UNIX-like OS.
 
 ### Structure
 
@@ -39,7 +41,7 @@ cmake . && make
 ./stack-machine --run file.asm    # To run asm file
 ```
 
-Only one asm, disasm and run command could be used.
+Only one asm, disasm and run command could be used at the time.
 
 ##### Available operations
 
@@ -48,7 +50,9 @@ File with code can contain next operations:
 IN       # Read double value from console and put it on stack
 OUT      # Pop value from stack and write it in console
 POP      # Pop value from stack
+POP AX   # Pop value from stack and put it into register
 PUSH 1.5 # Put the given value on top of the stack
+PUSH AX  # Put the value from register on top of the stack
 ADD      # Pop two values from stack and put the addition result on top of the stack 
 SUB      # Pop two values from stack and put the substraction result on top of the stack
 MUL      # Pop two values from stack and put the multiplication result on top of the stack
@@ -57,14 +61,29 @@ SQRT     # Pop one value from stack and put the square root on top of the stack
 HLT      # Stop the program
 ```
 
-Program should end with `HLT` command, otherwise it's behaviour is undefined.
+Program should end with `HLT` command, otherwise it's behaviour is undefined.  
 Each command should be on separate line.  
+Possible registers: `AX`, `BX`, `CX`, `DX`.  
 
 Example program (square root of sum):
 ```
 IN
 IN
-SUM
+ADD
+SQRT
+OUT
+HLT
+```
+
+Example program 2 (square root of the squared value minus 2):
+```
+IN
+POP AX
+PUSH AX
+PUSH AX
+MUL
+PUSH 2
+SUB
 SQRT
 OUT
 HLT
@@ -72,7 +91,7 @@ HLT
 
 If the error occurs while running the assembly file (for example, if the stack is empty and `POP` command is called), 
 then this program fails with assertion and exits by SIGABRT 
-(see https://github.com/viafanasyev/immortal-stack for available error messages at `STACK_SECURITY_LEVEL 3`).  
+(see https://github.com/viafanasyev/immortal-stack for list available error messages at `STACK_SECURITY_LEVEL 3`).  
 
 Probably, there will be more advanced error messages in the future.
  

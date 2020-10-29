@@ -40,14 +40,14 @@ byte getOpcodeByOperationName(const char* operation) {
 /**
  * Gets the operation name by it's operation code.
  * @param[in] opcode code of the operation
- * @return operation name, or ERR_INVALID_OPERATION if operation is invalid.
+ * @return operation name, or nullptr if operation is invalid.
  */
 const char* getOperationNameByOpcode(byte opcode) {
     switch (opcode) {
         case IN_OPCODE:   return "IN"  ;
         case OUT_OPCODE:  return "OUT" ;
-        case POP_OPCODE:  return "POP" ;
-        case PUSH_OPCODE: return "PUSH";
+        case POP_OPCODE:  case POPR_OPCODE:  return "POP" ;
+        case PUSH_OPCODE: case PUSHR_OPCODE: return "PUSH";
         case ADD_OPCODE:  return "ADD" ;
         case SUB_OPCODE:  return "SUB" ;
         case MUL_OPCODE:  return "MUL" ;
@@ -76,6 +76,8 @@ byte getOperationArityByOpcode(byte opcode) {
         case HLT_OPCODE:
             return 0;
         case PUSH_OPCODE:
+        case PUSHR_OPCODE:
+        case POPR_OPCODE:
             return 1;
         default:
             return ERR_INVALID_OPERATION;
@@ -83,22 +85,65 @@ byte getOperationArityByOpcode(byte opcode) {
 }
 
 /**
- * Parses first possible operation from the given string. Note that the given string is also modified (pointer moved to the next instruction).
- * @param[in, out] line string to parse operation from
- * @return parsed operation code, or ERR_INVALID_OPERATION of operation is invalid.
+ * Gets the register number by it's name.
+ * @param[in] regName name of the register
+ * @return register number, or ERR_INVALID_REGISTER if register is invalid.
  */
-byte parseOperation(char*& line) {
+byte getRegisterNumberByName(const char* regName) {
+    assert(regName != nullptr);
+
+    if (strcmp(regName, "AX") == 0) return 0;
+    if (strcmp(regName, "BX") == 0) return 1;
+    if (strcmp(regName, "CX") == 0) return 2;
+    if (strcmp(regName, "DX") == 0) return 3;
+    return ERR_INVALID_REGISTER;
+}
+
+/**
+ * Gets the register name by it's number.
+ * @param[in] regNumber number of the register
+ * @return register name, or nullptr if register is invalid.
+ */
+const char* getRegisterNameByNumber(byte regNumber) {
+    switch (regNumber) {
+        case 0: return "AX";
+        case 1: return "BX";
+        case 2: return "CX";
+        case 3: return "DX";
+        default: return nullptr;
+    }
+}
+
+/**
+ * Gets the next token (char sequence between space characters) from the given string.
+ * Note that the given string is also modified (pointer moved to the next token).
+ * @param[in, out] line string to get token from
+ * @return token read.
+ */
+char* getNextToken(char*& line) {
     assert(line != nullptr);
 
     char* end = line;
     while (!isspace(*end) && (*end != '\0')) ++end;
     *end = '\0';
 
-    byte opcode = getOpcodeByOperationName(line);
+    char* token = line;
 
     line = end + 1;
 
-    return opcode;
+    return token;
+}
+
+/**
+ * Parses first possible operation from the given string.
+ * Note that the given string is also modified (pointer moved to the next token).
+ * @param[in, out] line string to parse operation from
+ * @return parsed operation code, or ERR_INVALID_OPERATION if operation is invalid.
+ */
+byte parseOperation(char*& line) {
+    assert(line != nullptr);
+
+    return getOpcodeByOperationName(getNextToken(line));
 }
 
 /**
@@ -116,20 +161,31 @@ static bool toDouble(const char* string, double& value) {
 }
 
 /**
- * Parses first possible double operand from the given string. Note that the given string is also modified (pointer moved to the next instruction).
+ * Parses first possible double operand from the given string.
+ * Note that the given string is also modified (pointer moved to the next token).
  * @param[in, out] line string to parse operand from
  * @return parsed operand, or FP_NAN if operand is invalid.
  */
 double parseOperand(char*& line) {
     assert(line != nullptr);
 
-    char* end = line;
-    while (*end != '\0' && *end != ' ' && *end != '\n') ++end;
-    *end = '\0';
+    const char* token = getNextToken(line);
 
     double operand = FP_NAN;
-    if (!toDouble(line, operand)) operand = FP_NAN;
+    if (!toDouble(token, operand)) operand = FP_NAN;
     return operand;
+}
+
+/**
+ * Parses first possible register from the given string.
+ * Note that the given string is also modified (pointer moved to the next token).
+ * @param[in, out] line string to parse register from
+ * @return parsed register number, or ERR_INVALID_REGISTER if register is invalid.
+ */
+byte parseRegister(char*& line) {
+    assert(line != nullptr);
+
+    return getRegisterNumberByName(getNextToken(line));
 }
 
 /**
@@ -156,6 +212,19 @@ double asmReadOperand(FILE* input) {
         b = fgetc(input);
     }
     return doubleBytes.doubleValue;
+}
+
+/**
+ * Reads the next register from assembly file.
+ * @param[in] input assembly file
+ * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
+ */
+byte asmReadRegister(FILE* input) {
+    assert(input != nullptr);
+
+    byte reg = fgetc(input);
+    if (reg >= REGISTERS_NUMBER) return ERR_INVALID_REGISTER;
+    return reg;
 }
 
 /**
@@ -236,5 +305,17 @@ void disasmWriteOperation(FILE* output, const char* operation) {
 void disasmWriteOperand(FILE* output, double operand) {
     assert(output != nullptr);
 
-    fprintf(output, " %lf", operand);
+    fprintf(output, " %lg", operand);
+}
+
+/**
+ * Writes register name into the disassembly file.
+ * @param[out] output  disassembly file
+ * @param[in]  regName register name to write
+ */
+void disasmWriteRegister(FILE* output, const char* regName) {
+    assert(output != nullptr);
+    assert(regName != nullptr);
+
+    fprintf(output, " %s", regName);
 }

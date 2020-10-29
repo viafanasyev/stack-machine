@@ -121,7 +121,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if assembly ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if assembly ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met.</dd></dl>
+<p>Assembles the given source code file into the assembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputFileName</td><td>source code file name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">outputFileName</td><td>resulting assembly file name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if assembly ended successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met. </dd></dl>
 
 </div>
 </div>
@@ -157,7 +165,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if assembly ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if assembly ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met.</dd></dl>
+<p>Disassembles the given assembly file into the possible source code file. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputFileName</td><td>assembly file name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">outputFileName</td><td>resulting source code file name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if assembly ended successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met. </dd></dl>
 
 </div>
 </div>
@@ -182,7 +198,14 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if program ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if program ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met.</dd></dl>
+<p>Runs the given assembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">inputFileName</td><td>assembly file name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if program ended successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met. </dd></dl>
 
 </div>
 </div>

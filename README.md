@@ -22,6 +22,7 @@ NOTE: This program works only on UNIX-like OS.
 
 * test/ : Tests and testing library
     * testlib.h, testlib.cpp : Library for testing with assertions and helper macros.
+    * stack-machine-tests.cpp : Tests for stack machine.
     * main.cpp : Entry point for tests. Just runs all tests.
 
 * doc/ : doxygen documentation

@@ -88,6 +88,7 @@ Structure</h2>
 </li>
 <li>test/ : Tests and testing library<ul>
 <li><a class="el" href="testlib_8h.html" title="Header file with testlib description.">testlib.h</a>, <a class="el" href="testlib_8cpp.html" title="Source file with testlib implementation.">testlib.cpp</a> : Library for testing with assertions and helper macros.</li>
+<li><a class="el" href="stack-machine-tests_8cpp.html">stack-machine-tests.cpp</a> : Tests for stack machine.</li>
 <li>main.cpp : Entry point for tests. Just runs all tests.</li>
 </ul>
 </li>
@@ -99,11 +100,13 @@ Run</h2>
 <h3><a class="anchor" id="autotoc_md4"></a>
 Stack machine</h3>
 <p>To run main program execute next commands in terminal: </p><div class="fragment"><div class="line">cmake . &amp;&amp; make</div>
-<div class="line">./stack-machine --help            # To see help</div>
-<div class="line">./stack-machine --asm file.txt    # To assemble file with code. Result is put in out.asm</div>
-<div class="line">./stack-machine --disasm file.asm # To disassemble asm file. Result is put in out.disasm</div>
-<div class="line">./stack-machine --run file.asm    # To run asm file</div>
-</div><!-- fragment --><p>Only one asm, disasm and run command could be used at the time.</p>
+<div class="line">./stack-machine --help                          # To see help</div>
+<div class="line">./stack-machine --asm file.txt                  # To assemble file with code. Result is put in file.asm</div>
+<div class="line">./stack-machine --asm file1.txt -o file2.asm    # To assemble file with code. Result is put in file2.asm</div>
+<div class="line">./stack-machine --disasm file.asm               # To disassemble asm file. Result is put in file.txt</div>
+<div class="line">./stack-machine --disasm file1.asm -o file2.txt # To disassemble asm file. Result is put in file2.txt</div>
+<div class="line">./stack-machine --run file.asm                  # To run asm file</div>
+</div><!-- fragment --><p>Only one &ndash;asm, &ndash;disasm, &ndash;run option could be used at the time.</p>
 <h4><a class="anchor" id="autotoc_md5"></a>
 Available operations</h4>
 <p>File with code can contain next operations: </p><div class="fragment"><div class="line">IN       # Read double value from console and put it on stack</div>

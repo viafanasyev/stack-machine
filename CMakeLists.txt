@@ -21,4 +21,9 @@ add_executable(
         test/main.cpp
         test/testlib.h
         test/testlib.cpp
-        src/immortal-stack/stack.h)
+        src/immortal-stack/stack.h
+        src/stack-machine.h
+        src/stack-machine.cpp
+        src/stack-machine-utils.h
+        src/stack-machine-utils.cpp
+        test/stack-machine-tests.cpp)

@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
 #define STACK_SECURITY_LEVEL 3
 #define STACK_TYPE double
 #include "immortal-stack/stack.h"

@@ -1,5 +1,6 @@
 /**
  * @file
+ * @brief Implementation of stack machine functions.
  */
 #include <cassert>
 #include <cmath>
@@ -14,6 +15,12 @@
 
 using byte = unsigned char;
 
+/**
+ * Processes the no-operand operation with the given stack.
+ * @param[in, out] stack  stack to use in operation
+ * @param[in]      opcode code of the operation to process
+ * @return given operation code, or ERR_INVALID_OPERATION if operation code was invalid.
+ */
 static byte processOperation(Stack_double* stack, byte opcode) {
     if (opcode == IN_OPCODE) {
         double inputValue = FP_NAN;
@@ -51,6 +58,13 @@ static byte processOperation(Stack_double* stack, byte opcode) {
     return opcode;
 }
 
+/**
+ * Processes the single operand operation with the given stack.
+ * @param[in, out] stack   stack to use in operation
+ * @param[in]      opcode  code of the operation to process
+ * @param[in]      operand operand to process
+ * @return given operation code, or ERR_INVALID_OPERATION if operation code was invalid.
+ */
 static byte processOperation(Stack_double* stack, byte opcode, double operand) {
     switch (opcode) {
         case PUSH_OPCODE:
@@ -62,6 +76,12 @@ static byte processOperation(Stack_double* stack, byte opcode, double operand) {
     return opcode;
 }
 
+/**
+ * Processes the next operation from assembly file with the given stack.
+ * @param[in, out] stack stack to use in operation
+ * @param[in]      input assembly file
+ * @return processed operation code, or ERR_INVALID_OPERATION if operation was invalid.
+ */
 static byte processNextOperation(Stack_double* stack, FILE* input) {
     byte opcode = asmReadOperation(input);
 
@@ -76,6 +96,12 @@ static byte processNextOperation(Stack_double* stack, FILE* input) {
     }
 }
 
+/**
+ * Assembles the given source code file into the assembly file.
+ * @param[in] inputFileName  source code file name
+ * @param[in] outputFileName resulting assembly file name
+ * @return 0, if assembly ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met.
+ */
 int assemble(const char* inputFileName, const char* outputFileName) {
     assert(inputFileName != nullptr);
     assert(outputFileName != nullptr);
@@ -111,6 +137,12 @@ int assemble(const char* inputFileName, const char* outputFileName) {
     return 0;
 }
 
+/**
+ * Disassembles the given assembly file into the possible source code file.
+ * @param[in] inputFileName  assembly file name
+ * @param[in] outputFileName resulting source code file name
+ * @return 0, if assembly ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met.
+ */
 int disassemble(const char* inputFileName, const char* outputFileName) {
     assert(inputFileName != nullptr);
     assert(outputFileName != nullptr);
@@ -141,6 +173,11 @@ int disassemble(const char* inputFileName, const char* outputFileName) {
     return 0;
 }
 
+/**
+ * Runs the given assembly file.
+ * @param[in] inputFileName  assembly file name
+ * @return 0, if program ended successfully, or ERR_INVALID_OPERATION, if invalid operation was met.
+ */
 int run(const char* inputFileName) {
     assert(inputFileName != nullptr);
 

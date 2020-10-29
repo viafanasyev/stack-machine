@@ -57,7 +57,8 @@ SQRT     # Pop one value from stack and put the square root on top of the stack
 HLT      # Stop the program
 ```
 
-Program should end with `HLT` command, otherwise it's behaviour is undefined.  
+Program should end with `HLT` command, otherwise it's behaviour is undefined.
+Each command should be on separate line.  
 
 Example program (square root of sum):
 ```

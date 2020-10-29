@@ -4,6 +4,7 @@
 #include <argp.h>
 #include <cassert>
 #include <cstdlib>
+#include <cstring>
 #include "stack-machine.h"
 #include "stack-machine-utils.h"
 
@@ -14,10 +15,14 @@ enum runningMode {
     RUN    = 3,
 };
 
+static constexpr size_t maxFileNameLength = 256;
+static const char* assemblyFileExtension = ".asm";
+static const char* disassemblyFileExtension = ".txt";
+
 struct arguments {
     runningMode mode;
-    const char* inputFile;
-    const char* outputFile;
+    char inputFile[maxFileNameLength];
+    char outputFile[maxFileNameLength];
 };
 
 static char doc[] = "Stack machine with possibility to assemble, disassemble and run programs";
@@ -36,17 +41,17 @@ static error_t parseOption(int key, char* arg, struct argp_state* state) {
         case ASM:
         case DISASM:
         case RUN:
-            if (args->mode != NONE && args->inputFile != nullptr) {
+            if (args->mode != NONE && strlen(args->inputFile) != 0) {
                 argp_failure(state, -1, 0, "Too much --asm, --disasm or --run options. Only one is possible");
             }
             args->mode = (runningMode)key;
-            args->inputFile = arg;
+            strcpy(args->inputFile, arg);
             break;
         case 'o':
-            if (args->outputFile != nullptr) {
+            if (strlen(args->outputFile) != 0) {
                 argp_failure(state, -1, 0, "Too much --output options. Only one is possible");
             }
-            args->outputFile = arg;
+            strcpy(args->outputFile, arg);
             break;
 
         case ARGP_KEY_ARG:
@@ -65,28 +70,48 @@ static error_t parseOption(int key, char* arg, struct argp_state* state) {
 
 static struct argp argp = { options, parseOption, nullptr, doc, nullptr, nullptr, nullptr };
 
+static void stripExtension(char* fileName) {
+    assert(fileName != nullptr);
+
+    char* end = fileName + strlen(fileName);
+
+    while ((end > fileName) && (*end != '.') && (*end != '\\') && (*end != '/')) {
+        --end;
+    }
+
+    if ((end > fileName) && (*end == '.') && (*(end - 1) != '\\') && (*(end - 1) != '/')) {
+        *end = '\0';
+    }
+}
+
+static void replaceExtension(char* destination, const char* originalFileName, const char* newExtension) {
+    assert(originalFileName != nullptr);
+    assert(newExtension != nullptr);
+
+    char tmp[maxFileNameLength];
+    strcpy(tmp, originalFileName);
+    stripExtension(tmp);
+    strcpy(destination, strcat(tmp, newExtension));
+}
+
 static arguments parseArgs(int argc, char* argv[]) {
     assert(argv != nullptr);
 
-    arguments args {NONE, nullptr, nullptr };
+    arguments args { NONE, "", "" };
     argp_parse(&argp, argc, argv, 0, nullptr, &args);
     assert(args.mode != NONE);
 
-    if (args.outputFile == nullptr) {
-        // TODO: Set to fileName with different extensions?
-
+    if (strlen(args.outputFile) == 0) {
         switch (args.mode) {
             case ASM:
-                args.outputFile = "out.asm";
+                replaceExtension(args.outputFile, args.inputFile, assemblyFileExtension);
                 break;
             case DISASM:
-                args.outputFile = "out.disasm";
+                replaceExtension(args.outputFile, args.inputFile, disassemblyFileExtension);
                 break;
             case RUN:
-                args.outputFile = nullptr;
+                /* Do nothing */
                 break;
-
-            case NONE:
             default:
                 exit(-1);
         }

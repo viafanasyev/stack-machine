@@ -35,13 +35,15 @@ NOTE: This program works only on UNIX-like OS.
 To run main program execute next commands in terminal:
 ```shell script
 cmake . && make
-./stack-machine --help            # To see help
-./stack-machine --asm file.txt    # To assemble file with code. Result is put in out.asm
-./stack-machine --disasm file.asm # To disassemble asm file. Result is put in out.disasm
-./stack-machine --run file.asm    # To run asm file
+./stack-machine --help                          # To see help
+./stack-machine --asm file.txt                  # To assemble file with code. Result is put in file.asm
+./stack-machine --asm file1.txt -o file2.asm    # To assemble file with code. Result is put in file2.asm
+./stack-machine --disasm file.asm               # To disassemble asm file. Result is put in file.txt
+./stack-machine --disasm file1.asm -o file2.txt # To disassemble asm file. Result is put in file2.txt
+./stack-machine --run file.asm                  # To run asm file
 ```
 
-Only one asm, disasm and run command could be used at the time.
+Only one --asm, --disasm, --run option could be used at the time.
 
 ##### Available operations
 

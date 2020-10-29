@@ -66,6 +66,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
@@ -84,6 +85,11 @@ $(function() {
 <code>#include &quot;<a class="el" href="stack-machine_8h_source.html">stack-machine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="stack-machine-utils_8h_source.html">stack-machine-utils.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_stack_machine.html">StackMachine</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aa7e1a819404aeda9aae01711d3ddc314"><td class="memItemLeft" align="right" valign="top"><a id="aa7e1a819404aeda9aae01711d3ddc314"></a>
@@ -143,7 +149,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if assembly ended successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if assembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met. </dd></dl>
 
 </div>
 </div>
@@ -179,7 +185,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if assembly ended successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if disassembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met. </dd></dl>
 
 </div>
 </div>
@@ -204,7 +210,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if program ended successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if program finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack. </dd></dl>
 
 </div>
 </div>

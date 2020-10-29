@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstdlib>
 #include "stack-machine.h"
+#include "stack-machine-utils.h"
 
 enum runningMode {
     NONE   = 0,
@@ -96,16 +97,32 @@ static arguments parseArgs(int argc, char* argv[]) {
 int main(int argc, char* argv[]) {
     arguments args = parseArgs(argc, argv);
 
+    int exitCode = 0;
+
     switch (args.mode) {
         case ASM:
-            return assemble(args.inputFile, args.outputFile);
+            exitCode = assemble(args.inputFile, args.outputFile);
+            break;
         case DISASM:
-            return disassemble(args.inputFile, args.outputFile);
+            exitCode = disassemble(args.inputFile, args.outputFile);
+            break;
         case RUN:
-            return run(args.inputFile);
+            exitCode = run(args.inputFile);
+            break;
 
         case NONE:
         default:
-            return -1;
+            fprintf(stderr, "Invalid mode");
+            exitCode = -1;
     }
+
+    if (exitCode == ERR_INVALID_OPERATION) {
+        fprintf(stderr, "Invalid operation met\n");
+    } else if (exitCode == ERR_INVALID_REGISTER) {
+        fprintf(stderr, "Invalid register met\n");
+    } else if (exitCode == ERR_STACK_UNDERFLOW) {
+        fprintf(stderr, "Stack underflow\n");
+    }
+
+    return exitCode;
 }

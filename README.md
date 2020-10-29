@@ -89,13 +89,6 @@ OUT
 HLT
 ```
 
-If the error occurs while running the assembly file (for example, if the stack is empty and `POP` command is called), 
-then this program fails with assertion and exits by SIGABRT 
-(see https://github.com/viafanasyev/immortal-stack for list available error messages at `STACK_SECURITY_LEVEL 3`).  
-
-Probably, there will be more advanced error messages in the future.
- 
-
 #### Tests
 
 To run tests execute next commands in terminal:

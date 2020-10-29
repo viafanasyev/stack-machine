@@ -1,7 +1,7 @@
 var indexSectionsWithContent =
 {
   0: "acdefglmprst",
-  1: "adt",
+  1: "adst",
   2: "elmst",
   3: "acdfglprt",
   4: "t",

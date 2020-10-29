@@ -15,14 +15,23 @@
 
 using byte = unsigned char;
 
+struct StackMachine {
+    Stack_double stack;
+    double* registers = nullptr;
+};
+
 /**
  * Processes the no-operand operation with the given stack.
- * @param[in, out] stack  stack to use in operation
+ * @param[in, out] stackMachine stack machine to use in operation
  * @param[in]      opcode code of the operation to process
- * @return given operation code, or ERR_INVALID_OPERATION if operation code was invalid.
+ * @return given operation code, if operation processed successfully;
+ *         ERR_INVALID_OPERATION, if operation code was invalid;
+ *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
-static byte processOperation(Stack_double* stack, byte opcode) {
-    assert(stack != nullptr);
+static byte processOperation(StackMachine* stackMachine, byte opcode) {
+    assert(stackMachine != nullptr);
+
+    Stack_double* stack = &stackMachine->stack;
 
     if (opcode == IN_OPCODE) {
         double inputValue = FP_NAN;
@@ -30,26 +39,40 @@ static byte processOperation(Stack_double* stack, byte opcode) {
         scanf("%lg", &inputValue);
         push(stack, inputValue);
     } else if (opcode == OUT_OPCODE) {
+        if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
+
         printf("%lg\n", pop(stack));
     } else if (opcode == POP_OPCODE) {
+        if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
+
         pop(stack);
     } else if (opcode == ADD_OPCODE) {
+        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+
         double rhs = pop(stack);
         double lhs = pop(stack);
         push(stack, lhs + rhs);
     } else if (opcode == SUB_OPCODE) {
+        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+
         double rhs = pop(stack);
         double lhs = pop(stack);
         push(stack, lhs - rhs);
     } else if (opcode == MUL_OPCODE) {
+        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+
         double rhs = pop(stack);
         double lhs = pop(stack);
         push(stack, lhs * rhs);
     } else if (opcode == DIV_OPCODE) {
+        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+
         double rhs = pop(stack);
         double lhs = pop(stack);
         push(stack, lhs / rhs);
     } else if (opcode == SQRT_OPCODE) {
+        if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
+
         double top = pop(stack);
         push(stack, sqrt(top));
     } else if (opcode == HLT_OPCODE) {
@@ -62,21 +85,23 @@ static byte processOperation(Stack_double* stack, byte opcode) {
 
 /**
  * Processes the single operand operation with the given stack.
- * @param[in, out] stack   stack to use in operation
+ * @param[in, out] stackMachine stack machine to use in operation
  * @param[in]      opcode  code of the operation to process
  * @param[in, out] operand operand to process
- * @return given operation code, or ERR_INVALID_OPERATION if operation code was invalid.
+ * @return given operation code, if operation processed successfully;
+ *         ERR_INVALID_OPERATION, if operation code was invalid;
+ *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
-static byte processOperation(Stack_double* stack, byte opcode, double& operand) {
-    assert(stack != nullptr);
+static byte processOperation(StackMachine* stackMachine, byte opcode, double& operand) {
+    assert(stackMachine != nullptr);
 
     switch (opcode) {
         case PUSH_OPCODE:
         case PUSHR_OPCODE:
-            push(stack, operand);
+            push(&stackMachine->stack, operand);
             break;
         case POPR_OPCODE:
-            operand = pop(stack);
+            operand = pop(&stackMachine->stack);
             break;
         default:
             return ERR_INVALID_OPERATION;
@@ -86,16 +111,15 @@ static byte processOperation(Stack_double* stack, byte opcode, double& operand) 
 
 /**
  * Processes the next operation from assembly file with the given stack.
- * @param[in, out] stack     stack to use in operation
- * @param[in, out] registers stack machine registers
- * @param[in]      input     assembly file
+ * @param[in, out] stackMachine stack machine to use in operation
+ * @param[in]      input        assembly file
  * @return processed operation code;
  *         ERR_INVALID_OPERATION if operation was invalid;
- *         ERR_INVALID_REGISTER if register was invalid.
+ *         ERR_INVALID_REGISTER if register was invalid;
+ *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
-static byte processNextOperation(Stack_double* stack, double* registers, FILE* input) {
-    assert(stack != nullptr);
-    assert(registers != nullptr);
+static byte processNextOperation(StackMachine* stackMachine, FILE* input) {
+    assert(stackMachine != nullptr);
 
     byte opcode = asmReadOperation(input);
 
@@ -105,15 +129,15 @@ static byte processNextOperation(Stack_double* stack, double* registers, FILE* i
         if ((opcode & IS_REG_OP_MASK) != 0) {
             byte reg = asmReadRegister(input);
             if (reg == ERR_INVALID_REGISTER) return ERR_INVALID_REGISTER;
-            double& operand = registers[reg];
-            return processOperation(stack, opcode, operand);
+            double& operand = stackMachine->registers[reg];
+            return processOperation(stackMachine, opcode, operand);
         } else {
             double operand = asmReadOperand(input);
             if (!std::isfinite(operand)) return ERR_INVALID_OPERATION;
-            return processOperation(stack, opcode, operand);
+            return processOperation(stackMachine, opcode, operand);
         }
     } else {
-        return processOperation(stack, opcode);
+        return processOperation(stackMachine, opcode);
     }
 }
 
@@ -121,7 +145,7 @@ static byte processNextOperation(Stack_double* stack, double* registers, FILE* i
  * Assembles the given source code file into the assembly file.
  * @param[in] inputFileName  source code file name
  * @param[in] outputFileName resulting assembly file name
- * @return 0, if assembly ended successfully;
+ * @return 0, if assembly finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
  *         ERR_INVALID_REGISTER, if invalid register was met.
  */
@@ -176,7 +200,7 @@ int assemble(const char* inputFileName, const char* outputFileName) {
  * Disassembles the given assembly file into the possible source code file.
  * @param[in] inputFileName  assembly file name
  * @param[in] outputFileName resulting source code file name
- * @return 0, if assembly ended successfully;
+ * @return 0, if disassembly finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
  *         ERR_INVALID_REGISTER, if invalid register was met.
  */
@@ -217,27 +241,37 @@ int disassemble(const char* inputFileName, const char* outputFileName) {
 }
 
 /**
+ * Checks if the given operation code is actually an error code.
+ * @param[in] opcode operation code to check
+ * @return true, if the operation code is error code, false otherwise.
+ */
+static bool isError(byte opcode) {
+    return opcode == ERR_INVALID_OPERATION || opcode == ERR_INVALID_REGISTER || opcode == ERR_STACK_UNDERFLOW;
+}
+
+/**
  * Runs the given assembly file.
  * @param[in] inputFileName  assembly file name
- * @return 0, if program ended successfully;
+ * @return 0, if program finished successfully;
  *         ERR_INVALID_OPERATION, if invalid operation was met;
- *         ERR_INVALID_REGISTER, if invalid register was met.
+ *         ERR_INVALID_REGISTER, if invalid register was met;
+ *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
 int run(const char* inputFileName) {
     assert(inputFileName != nullptr);
 
     FILE* input = fopen(inputFileName, "rb");
-    Stack_double stack;
-    constructStack(&stack);
-    auto registers = (double*)calloc(REGISTERS_NUMBER, sizeof(double));
+    StackMachine stackMachine;
+    constructStack(&stackMachine.stack);
+    stackMachine.registers = (double*)calloc(REGISTERS_NUMBER, sizeof(double));
 
     byte opcode = ERR_INVALID_OPERATION;
     while (opcode != HLT_OPCODE) {
-        if ((opcode = processNextOperation(&stack, registers, input)) == ERR_INVALID_OPERATION) return ERR_INVALID_OPERATION;
+        if (isError(opcode = processNextOperation(&stackMachine, input))) return opcode;
     }
 
-    free(registers);
-    destructStack(&stack);
+    free(stackMachine.registers);
+    destructStack(&stackMachine.stack);
     fclose(input);
     return 0;
 }

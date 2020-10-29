@@ -103,3 +103,30 @@ TEST(failures, emptyStackOut_stackUnderflowErrorCodeReturned) {
 
     ASSERT_EQUALS(exitCode, ERR_STACK_UNDERFLOW);
 }
+
+TEST(failures, invalidOpcode_invalidOperationErrorCodeReturned) {
+    const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
+    FILE* asmTestFile = fopen(asmTestFileName, "wb");
+    asmWrite(asmTestFile, (unsigned char)ERR_INVALID_OPERATION); // ERR_INVALID_OPERATION is absolutely invalid opcode
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    fflush(asmTestFile);
+    fclose(asmTestFile);
+
+    int exitCode = run(asmTestFileName);
+
+    ASSERT_EQUALS(exitCode, ERR_INVALID_OPERATION);
+}
+
+TEST(failures, invalidRegister_invalidRegisterErrorCodeReturned) {
+    const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
+    FILE* asmTestFile = fopen(asmTestFileName, "wb");
+    asmWrite(asmTestFile, (unsigned char)PUSHR_OPCODE);
+    asmWrite(asmTestFile, (unsigned char)(REGISTERS_NUMBER + 1));
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    fflush(asmTestFile);
+    fclose(asmTestFile);
+
+    int exitCode = run(asmTestFileName);
+
+    ASSERT_EQUALS(exitCode, ERR_INVALID_REGISTER);
+}

@@ -8,6 +8,7 @@
 // TODO: Typed define guards?
 
 #include <cassert>
+#include <cstdlib>
 #include <sys/types.h>
 #include <typeinfo>
 #include "environment.h"
@@ -52,7 +53,7 @@ struct TYPED_STACK(STACK_TYPE) {
 #endif
 
 #if STACK_SECURITY_LEVEL >= 3
-    int _hash = 0;
+    long long _hash = 0;
 #endif
 
     /** Number of elements in stack */
@@ -157,7 +158,7 @@ static STACK_TYPE* getStackData(TYPED_STACK(STACK_TYPE)* thiz);
  * @param[in] thiz pointer to the stack this operation should be performed on
  * @return calculated hash value.
  */
-static int getHash(TYPED_STACK(STACK_TYPE)* thiz);
+static long long getHash(TYPED_STACK(STACK_TYPE)* thiz);
 #endif
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -321,7 +322,7 @@ void constructStack(TYPED_STACK(STACK_TYPE)* const thiz, size_t initialCapacity)
 
     #if STACK_SECURITY_LEVEL >= 2
         thiz->_data =
-            new char[sizeof(long long) * canariesNumber + sizeof(STACK_TYPE) * initialCapacity + sizeof(long long) * canariesNumber];
+            (char*)calloc(sizeof(long long) * canariesNumber + sizeof(STACK_TYPE) * initialCapacity + sizeof(long long) * canariesNumber, sizeof(char));
         long long* dataCanariesBefore =
             ((long long*)thiz->_data);
         long long* dataCanariesAfter  =
@@ -348,7 +349,7 @@ void destructStack(TYPED_STACK(STACK_TYPE)* const thiz) {
 
     thiz->_size = 0;
     thiz->_capacity = 0;
-    delete[] thiz->_data;
+    free(thiz->_data);
     thiz->_data = nullptr;
 
     #if STACK_SECURITY_LEVEL >= 3
@@ -370,7 +371,7 @@ void enlarge(TYPED_STACK(STACK_TYPE)* const thiz) {
 
         #if STACK_SECURITY_LEVEL >= 2
             char* newData =
-                new char[sizeof(long long) * canariesNumber + sizeof(STACK_TYPE) * thiz->_capacity + sizeof(long long) * canariesNumber];
+                    (char*)calloc(sizeof(long long) * canariesNumber + sizeof(STACK_TYPE) * thiz->_capacity + sizeof(long long) * canariesNumber, sizeof(char));
             for (size_t i = sizeof(long long) * canariesNumber; i < sizeof(long long) * canariesNumber + sizeof(STACK_TYPE) * thiz->_size; ++i) {
                 newData[i] = thiz->_data[i];
             }
@@ -390,7 +391,7 @@ void enlarge(TYPED_STACK(STACK_TYPE)* const thiz) {
             }
         #endif
 
-        delete[] thiz->_data;
+        free(thiz->_data);
         thiz->_data = newData;
     }
 
@@ -496,13 +497,13 @@ static STACK_TYPE* getStackData(TYPED_STACK(STACK_TYPE)* const thiz) {
  * @param[in] thiz pointer to the stack this operation should be performed on
  * @return calculated hash value.
  */
-static int getHash(TYPED_STACK(STACK_TYPE)* thiz) {
+static long long getHash(TYPED_STACK(STACK_TYPE)* thiz) {
     CHECK_STACK_CONDITION(thiz, thiz != nullptr && thiz->_data != nullptr);
 
-    constexpr int modulo = 1'000'000'009;
-    constexpr int p = 31; // TODO: Find better hash settings?
+    constexpr long long modulo = 1'000'000'009L;
+    constexpr long long p = 31L; // TODO: Find better hash settings?
 
-    int hash = 0;
+    long long hash = 0;
     for (char* bytePtr = (char*)thiz; bytePtr < (char*)&(thiz->_hash); ++bytePtr) {
         hash = (hash * p) % modulo;
         hash = (hash + *bytePtr) % modulo;

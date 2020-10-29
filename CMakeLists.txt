@@ -10,7 +10,11 @@ add_executable(
         src/main.cpp
         src/immortal-stack/stack.h
         src/immortal-stack/logger.h
-        src/immortal-stack/environment.h)
+        src/immortal-stack/environment.h
+        src/stack-machine.h
+        src/stack-machine.cpp
+        src/stack-machine-utils.h
+        src/stack-machine-utils.cpp)
 
 add_executable(
         tests

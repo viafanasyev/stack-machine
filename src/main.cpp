@@ -147,6 +147,8 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "Invalid register met\n");
     } else if (exitCode == ERR_STACK_UNDERFLOW) {
         fprintf(stderr, "Stack underflow\n");
+    } else if (exitCode == ERR_INVALID_LABEL) {
+        fprintf(stderr, "Invalid label\n");
     }
 
     return exitCode;

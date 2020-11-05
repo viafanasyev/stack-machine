@@ -6,6 +6,8 @@
 #define STACK_MACHINE_STACK_MACHINE_UTILS_H
 
 #include <cstdio>
+#include <map>
+#include <vector>
 
 #define IN_OPCODE   0b00000001u
 #define OUT_OPCODE  0b00000010u
@@ -16,17 +18,118 @@
 #define MUL_OPCODE  0b00001010u
 #define DIV_OPCODE  0b00001011u
 #define SQRT_OPCODE 0b00001100u
+#define JMP_OPCODE  0b00100000u
 #define HLT_OPCODE  0b00000000u
 
 #define ERR_INVALID_OPERATION   0b11111111u
 #define ERR_INVALID_REGISTER    0b11111110u
 #define ERR_STACK_UNDERFLOW     0b11111101u
+#define ERR_INVALID_LABEL       0b11111100u
 
 #define REGISTERS_NUMBER 4u
 #define IS_REG_OP_MASK 0b10000000u
 
 #define PUSHR_OPCODE (PUSH_OPCODE | IS_REG_OP_MASK)
 #define POPR_OPCODE  (POP_OPCODE  | IS_REG_OP_MASK)
+
+struct AssemblyMachine {
+    double* registers = nullptr;
+    int pc = -1;
+    unsigned char* assembly = nullptr;
+    int assemblySize = -1;
+};
+
+/**
+ * Associative table for code labels. Stores labels' names and offsets.
+ */
+class LabelTable {
+    constexpr static unsigned int MAX_LINE_LENGTH = 256u;
+
+    struct keyCompare {
+        bool operator()(char* a, char* b) const {
+            return strcmp(a, b) < 0;
+        }
+    };
+
+    std::map<char*, unsigned int, keyCompare> labels;
+
+public:
+    LabelTable() = default;
+
+    LabelTable(const LabelTable& labelTable);
+
+    void swap(LabelTable& other);
+
+    LabelTable& operator=(LabelTable other);
+
+    /**
+     * Gets the label offset by it's name.
+     * @param[in] labelName name of the label to find
+     * @return label offset, or -1, if there is no label with the given name.
+     */
+    int getLabelOffset(char* labelName);
+
+    /**
+     * Creates new label from the given name and offset.
+     * @param[in] line        line containing name of the label. Can contain ':' symbol at the end.
+     * @param[in] labelOffset offset of the label
+     * @return 0, if label was created successfully, or ERR_INVALID_LABEL, if label with the given name already exists.
+     */
+    unsigned char addLabel(const char* line, unsigned int labelOffset);
+
+    ~LabelTable();
+};
+
+/**
+ * Buffer for disassembly file. Stores lines of code and labels to be inserted in this code.
+ */
+class DisassemblyBuffer {
+    constexpr static unsigned int MAX_LINE_LENGTH = 256u;
+    constexpr static unsigned int MAX_LABEL_LENGTH = 12u; // 1 ('L') + 10 (max int length) + 1 ('\0')
+
+    std::vector<char*> lines;
+    std::map<unsigned int, char*> labels;
+
+public:
+    /**
+     * Writes operation name into the disassembly buffer.
+     * @param[in] operation operation name to write
+     */
+    void writeOperation(const char* operation);
+
+    /**
+     * Writes double operand into the disassembly buffer.
+     * @param[in] operand operand to write
+     */
+    void writeOperand(double operand);
+
+    /**
+     * Writes register name into the disassembly buffer.
+     * @param[in] regName register name to write
+     */
+    void writeRegister(const char* regName);
+
+    /**
+     * Creates and writes jump label (as argument of JMP or similar operation) into the disassembly buffer.
+     * Jump labels are created from offsets, and then put into disassembly file in flushToFile method.
+     * @param[in] labelOffset jump label offset
+     */
+    void writeJumpLabelArgument(int labelOffset);
+
+    /**
+     * Returns the label name by it's offset. If there's no label with the given offset, the new one is created.
+     * @param[in] labelOffset offset of the label to get
+     * @return name of the label.
+     */
+    const char* getLabelByOffset(int labelOffset);
+
+    /**
+     * Flushes this buffer content into the given file. All data is cleared.
+     * @param[out] output disassembly file to flush buffer into
+     * @return 0, if flushing completed successfully, or ERR_INVALID_LABEL, if any of the labels was invalid.
+     */
+    unsigned char flushToFile(FILE* output);
+};
 
 /**
  * Gets the operation code by it's name.
@@ -94,26 +197,69 @@ double parseOperand(char*& line);
  */
 unsigned char parseRegister(char*& line);
 
+bool isLabel(const char* token);
+
+bool isJumpOperation(unsigned char opcode);
+
 /**
- * Reads the next operation from assembly file.
- * @param[in] input assembly file
+ * Reads the next operation from assembly file. Increases offset by the number of bytes read.
+ * @param[in]      input             assembly file
+ * @param[in, out] currentByteOffset current offset in bytes
  * @return operation code of the operation read.
  */
-unsigned char asmReadOperation(FILE* input);
+unsigned char asmReadOperation(FILE* input, int& currentByteOffset);
 
 /**
- * Reads the next double operand from assembly file.
- * @param[in] input assembly file
+ * Reads the next operation from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read operation from
+ * @return operation code of the operation read.
+ */
+unsigned char asmReadOperation(AssemblyMachine* assemblyMachine);
+
+/**
+ * Reads the next double operand from assembly file. Increases offset by the number of bytes read.
+ * @param[in]      input             assembly file
+ * @param[in, out] currentByteOffset current offset in bytes
  * @return operand read.
  */
-double asmReadOperand(FILE* input);
+double asmReadOperand(FILE* input, int& currentByteOffset);
 
 /**
- * Reads the next register from assembly file.
- * @param[in] input assembly file
+ * Reads the next operand from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read operand from
+ * @return operand read.
+ */
+double asmReadOperand(AssemblyMachine* assemblyMachine);
+
+/**
+ * Reads the next register from assembly file. Increases offset by the number of bytes read.
+ * @param[in]      input             assembly file
+ * @param[in, out] currentByteOffset current offset in bytes
  * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
  */
-unsigned char asmReadRegister(FILE* input);
+unsigned char asmReadRegister(FILE* input, int& currentByteOffset);
+
+/**
+ * Reads the next register from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine stack machine to read register from
+ * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
+ */
+unsigned char asmReadRegister(AssemblyMachine* assemblyMachine);
+
+/**
+ * Reads the next jump offset from assembly file. Increases offset by the number of bytes read.
+ * @param[in]      input             assembly file
+ * @param[in, out] currentByteOffset current offset in bytes
+ * @return jump offset.
+ */
+int asmReadJumpOffset(FILE* input, int& currentByteOffset);
+
+/**
+ * Reads the next jump offset from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read jump offset from
+ * @return jump offset.
+ */
+int asmReadJumpOffset(AssemblyMachine* assemblyMachine);
 
 /**
  * Removes leading and trailing space characters (whitespaces, '\\n', '\\t', etc) from the given C-string. Note that the given string is also changed.
@@ -123,45 +269,27 @@ unsigned char asmReadRegister(FILE* input);
 char* trim(char* line);
 
 /**
- * Writes operation code into the assembly file.
- * @param[out] output assembly file
- * @param[in]  b      operation code to write
+ * Writes byte into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write).
+ * @param[out]     output            assembly file
+ * @param[in]      b                 byte to write
+ * @param[in, out] currentByteOffset current offset in bytes
  */
-void asmWrite(FILE* output, unsigned char b);
+void asmWrite(FILE* output, unsigned char b, int& currentByteOffset);
 
 /**
- * Writes double operand into the assembly file.
- * @param[out] output assembly file
- * @param[in]  value  operand to write
+ * Writes double operand into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write).
+ * @param[out]     output            assembly file
+ * @param[in]      value             operand to write
+ * @param[in, out] currentByteOffset current offset in bytes
  */
-void asmWrite(FILE* output, double value);
+void asmWrite(FILE* output, double value, int& currentByteOffset);
 
 /**
- * Writes C-string into the disassembly file.
- * @param[out] output disassembly file
- * @param[in]  line   string to write
+ * Writes int operand into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write).
+ * @param[out]     output            assembly file
+ * @param[in]      value             operand to write
+ * @param[in, out] currentByteOffset current offset in bytes
  */
-void disasmWrite(FILE* output, const char* line);
-
-/**
- * Writes operation name into the disassembly file.
- * @param[out] output    disassembly file
- * @param[in]  operation operation name to write
- */
-void disasmWriteOperation(FILE* output, const char* operation);
-
-/**
- * Writes double operand into the disassembly file.
- * @param[out] output  disassembly file
- * @param[in]  operand operand to write
- */
-void disasmWriteOperand(FILE* output, double operand);
-
-/**
- * Writes register name into the disassembly file.
- * @param[out] output  disassembly file
- * @param[in]  regName register name to write
- */
-void disasmWriteRegister(FILE* output, const char* regName);
+void asmWrite(FILE* output, int value, int& currentByteOffset);
 
 #endif // STACK_MACHINE_STACK_MACHINE_UTILS_H

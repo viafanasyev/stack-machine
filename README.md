@@ -50,23 +50,30 @@ Only one --asm, --disasm, --run option could be used at the time.
 
 File with code can contain next operations:
 ```
-IN       # Read double value from console and put it on stack
-OUT      # Pop value from stack and write it in console
-POP      # Pop value from stack
-POP AX   # Pop value from stack and put it into register
-PUSH 1.5 # Put the given value on top of the stack
-PUSH AX  # Put the value from register on top of the stack
-ADD      # Pop two values from stack and put the addition result on top of the stack 
-SUB      # Pop two values from stack and put the substraction result on top of the stack
-MUL      # Pop two values from stack and put the multiplication result on top of the stack
-DIV      # Pop two values from stack and put the division result on top of the stack
-SQRT     # Pop one value from stack and put the square root on top of the stack
-HLT      # Stop the program
+IN        # Read double value from console and put it on stack
+OUT       # Pop value from stack and write it in console
+POP       # Pop value from stack
+POP AX    # Pop value from stack and put it into register
+PUSH 1.5  # Put the given value on top of the stack
+PUSH AX   # Put the value from register on top of the stack
+ADD       # Pop two values from stack and put the addition result on top of the stack 
+SUB       # Pop two values from stack and put the substraction result on top of the stack
+MUL       # Pop two values from stack and put the multiplication result on top of the stack
+DIV       # Pop two values from stack and put the division result on top of the stack
+SQRT      # Pop one value from stack and put the square root on top of the stack
+JMP LABEL # Unconditional jump to the given label
+HLT       # Stop the program
 ```
 
 Program should end with `HLT` command, otherwise it's behaviour is undefined.  
+
 Each command should be on separate line.  
+
 Possible registers: `AX`, `BX`, `CX`, `DX`.  
+
+Labels have to be written on separate lines, can not contain spaces and must end with `:` symbol. Example: `START:` (see more examples below).
+
+##### Examples
 
 Example program (square root of sum):
 ```
@@ -90,6 +97,16 @@ SUB
 SQRT
 OUT
 HLT
+```
+
+Example program 3 (infinite cycle: read number and print it's square root):
+```
+START:     <-- Label should be on separate line
+IN
+SQRT
+OUT
+JMP START
+HLT        <-- Not necessary
 ```
 
 #### Tests

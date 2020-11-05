@@ -16,6 +16,156 @@ union doubleAsBytes {
     byte bytes[sizeof(double)];
 };
 
+union intAsBytes {
+    int intValue;
+    byte bytes[sizeof(int)];
+};
+
+LabelTable::LabelTable(const LabelTable& labelTable) {
+    for (auto entry : labelTable.labels) {
+        addLabel(entry.first, entry.second);
+    }
+}
+
+void LabelTable::swap(LabelTable& other) {
+    std::swap(labels, other.labels);
+}
+
+LabelTable& LabelTable::operator=(LabelTable other) {
+    swap(other);
+    return *this;
+}
+
+/**
+ * Gets the label offset by it's name.
+ * @param[in] labelName name of the label to find
+ * @return label offset, or -1, if there is no label with the given name.
+ */
+int LabelTable::getLabelOffset(char* labelName) {
+    if (labels.count(labelName) == 0) return -1;
+    return labels[labelName];
+}
+
+byte LabelTable::addLabel(const char* line, unsigned int labelOffset) {
+    char* labelName = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
+    for (unsigned int i = 0; i < MAX_LINE_LENGTH; ++i) {
+        if ((line[i] == ':') || (line[i] == '\0')) {
+            labelName[i] = '\0';
+            break;
+        }
+        labelName[i] = line[i];
+    }
+
+    if (labels.count(labelName) != 0) {
+        free(labelName);
+        return ERR_INVALID_LABEL;
+    }
+
+    labels[labelName] = labelOffset;
+    return 0;
+}
+
+LabelTable::~LabelTable() {
+    for (auto entry : labels) {
+        free(entry.first);
+    }
+}
+
+/**
+ * Writes operation name into the disassembly buffer.
+ * @param[in] operation operation name to write
+ */
+void DisassemblyBuffer::writeOperation(const char* operation) {
+    assert(operation != nullptr);
+
+    char* line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
+    strcpy(line, operation);
+    lines.push_back(line);
+}
+
+/**
+ * Writes double operand into the disassembly buffer.
+ * @param[in] operand operand to write
+ */
+void DisassemblyBuffer::writeOperand(double operand) {
+    char line[MAX_LINE_LENGTH];
+    sprintf(line, " %lg", operand);
+    strcat(lines.back(), line);
+}
+
+/**
+ * Writes register name into the disassembly buffer.
+ * @param[in] regName register name to write
+ */
+void DisassemblyBuffer::writeRegister(const char* regName) {
+    assert(regName != nullptr);
+
+    strcat(lines.back(), " ");
+    strcat(lines.back(), regName);
+}
+
+/**
+ * Creates and writes jump label (as argument of JMP or similar operation) into the disassembly buffer.
+ * Jump labels are created from offsets, and then put into disassembly file in flushToFile method.
+ * @param[in] labelOffset jump label offset
+ */
+void DisassemblyBuffer::writeJumpLabelArgument(int labelOffset) {
+    assert(labelOffset >= 0);
+
+    strcat(lines.back(), " ");
+    strcat(lines.back(), getLabelByOffset(labelOffset));
+}
+
+/**
+ * Returns the label name by it's offset. If there's no label with the given offset, the new one is created.
+ * @param[in] labelOffset offset of the label to get
+ * @return name of the label.
+ */
+const char* DisassemblyBuffer::getLabelByOffset(int labelOffset) {
+    assert(labelOffset >= 0);
+
+    if (labels.count(labelOffset) == 0) {
+        char* labelName = (char*)calloc(MAX_LABEL_LENGTH, sizeof(char));
+        unsigned int labelsNumber = labels.size();
+        sprintf(labelName, "L%u", labelsNumber);
+        labels[labelOffset] = labelName;
+    }
+    return labels[labelOffset];
+}
+
+/**
+ * Flushes this buffer content into the given file. All data is cleared.
+ * @param[out] output disassembly file to flush buffer into
+ * @return 0, if flushing completed successfully, or ERR_INVALID_LABEL, if any of the labels was invalid.
+ */
+byte DisassemblyBuffer::flushToFile(FILE* output) {
+    assert(output != nullptr);
+
+    for (size_t i = 0; i < lines.size(); ++i) {
+        if (labels.count(i) != 0) {
+            char* label = labels[i];
+            fprintf(output, "%s:\n", label);
+            free(label);
+            labels.erase(i);
+        }
+
+        char* line = lines[i];
+        fprintf(output, "%s\n", line);
+        free(line);
+    }
+    lines.clear();
+
+    // If there are any labels left after the code, then they are invalid, because they point to an empty fragment
+    if (!labels.empty()) {
+        for (auto entry : labels) {
+            free(entry.second);
+        }
+        return ERR_INVALID_LABEL;
+    }
+
+    return 0;
+}
+
 /**
  * Gets the operation code by it's name.
  * @param[in] operation name of the operation
@@ -34,6 +184,7 @@ byte getOpcodeByOperationName(const char* operation) {
     if (strcmp(operation, "DIV" ) == 0) return DIV_OPCODE ;
     if (strcmp(operation, "SQRT") == 0) return SQRT_OPCODE;
     if (strcmp(operation, "HLT" ) == 0) return HLT_OPCODE ;
+    if (strcmp(operation, "JMP" ) == 0) return JMP_OPCODE ;
     return ERR_INVALID_OPERATION;
 }
 
@@ -54,6 +205,7 @@ const char* getOperationNameByOpcode(byte opcode) {
         case DIV_OPCODE:  return "DIV" ;
         case SQRT_OPCODE: return "SQRT";
         case HLT_OPCODE:  return "HLT" ;
+        case JMP_OPCODE:  return "JMP" ;
         default: return nullptr;
     }
 }
@@ -78,6 +230,7 @@ byte getOperationArityByOpcode(byte opcode) {
         case PUSH_OPCODE:
         case PUSHR_OPCODE:
         case POPR_OPCODE:
+        case JMP_OPCODE:
             return 1;
         default:
             return ERR_INVALID_OPERATION;
@@ -188,25 +341,61 @@ byte parseRegister(char*& line) {
     return getRegisterNumberByName(getNextToken(line));
 }
 
+bool isLabel(const char* token) {
+    const char* end = token + strlen(token) - 1;
+    while (end > token && isspace(*end) && (*end != ':')) {
+        --end;
+    }
+    if ((end >= token) && (*end == ':')) {
+        while (--end >= token) {
+            if (isspace(*end)) return false;
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool isJumpOperation(byte opcode) {
+    return opcode == JMP_OPCODE;
+}
+
 /**
- * Reads the next operation from assembly file.
- * @param[in] input assembly file
+ * Reads the next operation from assembly file. Increases offset by the number of bytes read.
+ * @param[in]      input             assembly file
+ * @param[in, out] currentByteOffset current offset in bytes
  * @return operation code of the operation read.
  */
-byte asmReadOperation(FILE* input) {
+byte asmReadOperation(FILE* input, int& currentByteOffset) {
     assert(input != nullptr);
 
+    currentByteOffset += sizeof(byte);
     return fgetc(input);
 }
 
 /**
- * Reads the next double operand from assembly file.
- * @param[in] input assembly file
+ * Reads the next operation from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read operation from
+ * @return operation code of the operation read.
+ */
+byte asmReadOperation(AssemblyMachine* assemblyMachine) {
+    assert(assemblyMachine != nullptr);
+
+    byte opCode = assemblyMachine->assembly[assemblyMachine->pc];
+    assemblyMachine->pc += sizeof(byte);
+    return opCode;
+}
+
+/**
+ * Reads the next double operand from assembly file. Increases offset by the number of bytes read.
+ * @param[in]      input             assembly file
+ * @param[in, out] currentByteOffset current offset in bytes
  * @return operand read.
  */
-double asmReadOperand(FILE* input) {
+double asmReadOperand(FILE* input, int& currentByteOffset) {
     assert(input != nullptr);
 
+    currentByteOffset += sizeof(double);
     doubleAsBytes doubleBytes { 0 };
     for (byte& b : doubleBytes.bytes) {
         b = fgetc(input);
@@ -215,16 +404,81 @@ double asmReadOperand(FILE* input) {
 }
 
 /**
- * Reads the next register from assembly file.
- * @param[in] input assembly file
+ * Reads the next operand from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read operand from
+ * @return operand read.
+ */
+double asmReadOperand(AssemblyMachine* assemblyMachine) {
+    assert(assemblyMachine != nullptr);
+
+    doubleAsBytes doubleBytes { 0 };
+    for (byte& b : doubleBytes.bytes) {
+        b = assemblyMachine->assembly[assemblyMachine->pc];
+        assemblyMachine->pc += sizeof(byte);
+    }
+    return doubleBytes.doubleValue;
+}
+
+/**
+ * Reads the next register from assembly file. Increases offset by the number of bytes read.
+ * @param[in]      input             assembly file
+ * @param[in, out] currentByteOffset current offset in bytes
  * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
  */
-byte asmReadRegister(FILE* input) {
+byte asmReadRegister(FILE* input, int& currentByteOffset) {
     assert(input != nullptr);
 
+    currentByteOffset += sizeof(byte);
     byte reg = fgetc(input);
     if (reg >= REGISTERS_NUMBER) return ERR_INVALID_REGISTER;
     return reg;
+}
+
+/**
+ * Reads the next register from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine stack machine to read register from
+ * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
+ */
+byte asmReadRegister(AssemblyMachine* assemblyMachine) {
+    assert(assemblyMachine != nullptr);
+
+    byte reg = assemblyMachine->assembly[assemblyMachine->pc];
+    assemblyMachine->pc += sizeof(byte);
+    if (reg >= REGISTERS_NUMBER) return ERR_INVALID_REGISTER;
+    return reg;
+}
+
+/**
+ * Reads the next jump offset from assembly file. Increases offset by the number of bytes read.
+ * @param[in]      input             assembly file
+ * @param[in, out] currentByteOffset current offset in bytes
+ * @return jump offset.
+ */
+int asmReadJumpOffset(FILE* input, int& currentByteOffset) {
+    assert(input != nullptr);
+
+    currentByteOffset += sizeof(int);
+    intAsBytes intBytes { 0 };
+    for (byte& b : intBytes.bytes) {
+        b = fgetc(input);
+    }
+    return intBytes.intValue;
+}
+
+/**
+ * Reads the next jump offset from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read jump offset from
+ * @return jump offset.
+ */
+int asmReadJumpOffset(AssemblyMachine* assemblyMachine) {
+    assert(assemblyMachine != nullptr);
+
+    intAsBytes intBytes { 0 };
+    for (byte& b : intBytes.bytes) {
+        b = assemblyMachine->assembly[assemblyMachine->pc];
+        assemblyMachine->pc += sizeof(byte);
+    }
+    return intBytes.intValue;
 }
 
 /**
@@ -249,73 +503,46 @@ char* trim(char* s) {
 }
 
 /**
- * Writes operation code into the assembly file.
- * @param[out] output assembly file
- * @param[in]  b      operation code to write
+ * Writes byte into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write).
+ * @param[out]     output            assembly file
+ * @param[in]      b                 byte to write
+ * @param[in, out] currentByteOffset current offset in bytes
  */
-void asmWrite(FILE* output, byte b) {
-    assert(output != nullptr);
-
-    fputc(b, output);
-}
-
-/**
- * Writes double operand into the assembly file.
- * @param[out] output assembly file
- * @param[in]  value  operand to write
- */
-void asmWrite(FILE* output, double value) {
-    assert(output != nullptr);
-
-    doubleAsBytes doubleBytes { value };
-    for (byte b : doubleBytes.bytes) {
+void asmWrite(FILE* output, byte b, int& currentByteOffset) {
+    currentByteOffset += sizeof(b);
+    if (output != nullptr) {
         fputc(b, output);
     }
 }
 
 /**
- * Writes C-string into the disassembly file.
- * @param[out] output disassembly file
- * @param[in]  line   string to write
+ * Writes double operand into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write).
+ * @param[out]     output            assembly file
+ * @param[in]      value             operand to write
+ * @param[in, out] currentByteOffset current offset in bytes
  */
-void disasmWrite(FILE* output, const char* line) {
-    assert(output != nullptr);
-    assert(line != nullptr);
-
-    fprintf(output, "%s", line);
+void asmWrite(FILE* output, double value, int& currentByteOffset) {
+    currentByteOffset += sizeof(value);
+    if (output != nullptr) {
+        doubleAsBytes doubleBytes{value};
+        for (byte b : doubleBytes.bytes) {
+            fputc(b, output);
+        }
+    }
 }
 
 /**
- * Writes operation name into the disassembly file.
- * @param[out] output    disassembly file
- * @param[in]  operation operation name to write
+ * Writes int operand into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write).
+ * @param[out]     output            assembly file
+ * @param[in]      value             operand to write
+ * @param[in, out] currentByteOffset current offset in bytes
  */
-void disasmWriteOperation(FILE* output, const char* operation) {
-    assert(output != nullptr);
-    assert(operation != nullptr);
-
-    fputs(operation, output);
-}
-
-/**
- * Writes double operand into the disassembly file.
- * @param[out] output  disassembly file
- * @param[in]  operand operand to write
- */
-void disasmWriteOperand(FILE* output, double operand) {
-    assert(output != nullptr);
-
-    fprintf(output, " %lg", operand);
-}
-
-/**
- * Writes register name into the disassembly file.
- * @param[out] output  disassembly file
- * @param[in]  regName register name to write
- */
-void disasmWriteRegister(FILE* output, const char* regName) {
-    assert(output != nullptr);
-    assert(regName != nullptr);
-
-    fprintf(output, " %s", regName);
+void asmWrite(FILE* output, int value, int& currentByteOffset) {
+    currentByteOffset += sizeof(value);
+    if (output != nullptr) {
+        intAsBytes intBytes{value};
+        for (byte b : intBytes.bytes) {
+            fputc(b, output);
+        }
+    }
 }

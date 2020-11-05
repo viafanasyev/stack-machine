@@ -8,8 +8,9 @@
 TEST(failures, emptyStackPop_stackUnderflowErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)POP_OPCODE);
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)POP_OPCODE, dummy);
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 
@@ -21,10 +22,11 @@ TEST(failures, emptyStackPop_stackUnderflowErrorCodeReturned) {
 TEST(failures, singleOperandStackAdd_stackUnderflowErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)PUSH_OPCODE);
-    asmWrite(asmTestFile, 0.0);
-    asmWrite(asmTestFile, (unsigned char)ADD_OPCODE);
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)PUSH_OPCODE, dummy);
+    asmWrite(asmTestFile, 0.0, dummy);
+    asmWrite(asmTestFile, (unsigned char)ADD_OPCODE, dummy);
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 
@@ -36,10 +38,11 @@ TEST(failures, singleOperandStackAdd_stackUnderflowErrorCodeReturned) {
 TEST(failures, singleOperandStackSub_stackUnderflowErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)PUSH_OPCODE);
-    asmWrite(asmTestFile, 0.0);
-    asmWrite(asmTestFile, (unsigned char)SUB_OPCODE);
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)PUSH_OPCODE, dummy);
+    asmWrite(asmTestFile, 0.0, dummy);
+    asmWrite(asmTestFile, (unsigned char)SUB_OPCODE, dummy);
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 
@@ -51,10 +54,11 @@ TEST(failures, singleOperandStackSub_stackUnderflowErrorCodeReturned) {
 TEST(failures, singleOperandStackMul_stackUnderflowErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)PUSH_OPCODE);
-    asmWrite(asmTestFile, 0.0);
-    asmWrite(asmTestFile, (unsigned char)MUL_OPCODE);
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)PUSH_OPCODE, dummy);
+    asmWrite(asmTestFile, 0.0, dummy);
+    asmWrite(asmTestFile, (unsigned char)MUL_OPCODE, dummy);
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 
@@ -66,10 +70,11 @@ TEST(failures, singleOperandStackMul_stackUnderflowErrorCodeReturned) {
 TEST(failures, singleOperandStackDiv_stackUnderflowErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)PUSH_OPCODE);
-    asmWrite(asmTestFile, 0.0);
-    asmWrite(asmTestFile, (unsigned char)DIV_OPCODE);
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)PUSH_OPCODE, dummy);
+    asmWrite(asmTestFile, 0.0, dummy);
+    asmWrite(asmTestFile, (unsigned char)DIV_OPCODE, dummy);
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 
@@ -81,8 +86,9 @@ TEST(failures, singleOperandStackDiv_stackUnderflowErrorCodeReturned) {
 TEST(failures, emptyStackSqrt_stackUnderflowErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)SQRT_OPCODE);
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)SQRT_OPCODE, dummy);
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 
@@ -94,8 +100,9 @@ TEST(failures, emptyStackSqrt_stackUnderflowErrorCodeReturned) {
 TEST(failures, emptyStackOut_stackUnderflowErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)OUT_OPCODE);
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)OUT_OPCODE, dummy);
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 
@@ -107,8 +114,9 @@ TEST(failures, emptyStackOut_stackUnderflowErrorCodeReturned) {
 TEST(failures, invalidOpcode_invalidOperationErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)ERR_INVALID_OPERATION); // ERR_INVALID_OPERATION is absolutely invalid opcode
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)ERR_INVALID_OPERATION, dummy); // ERR_INVALID_OPERATION is absolutely invalid opcode
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 
@@ -120,9 +128,10 @@ TEST(failures, invalidOpcode_invalidOperationErrorCodeReturned) {
 TEST(failures, invalidRegister_invalidRegisterErrorCodeReturned) {
     const char* asmTestFileName = "ASM_TEST_FILE_NAME.txt";
     FILE* asmTestFile = fopen(asmTestFileName, "wb");
-    asmWrite(asmTestFile, (unsigned char)PUSHR_OPCODE);
-    asmWrite(asmTestFile, (unsigned char)(REGISTERS_NUMBER + 1));
-    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE);
+    int dummy = 0;
+    asmWrite(asmTestFile, (unsigned char)PUSHR_OPCODE, dummy);
+    asmWrite(asmTestFile, (unsigned char)(REGISTERS_NUMBER + 1), dummy);
+    asmWrite(asmTestFile, (unsigned char)HLT_OPCODE, dummy);
     fflush(asmTestFile);
     fclose(asmTestFile);
 

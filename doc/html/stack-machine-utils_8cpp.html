@@ -87,6 +87,8 @@ $(function() {
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="uniondouble_as_bytes.html">doubleAsBytes</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionint_as_bytes.html">intAsBytes</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -114,32 +116,128 @@ Functions</h2></td></tr>
 <tr class="separator:ab9829009112576d0e961a0bd4b1d81a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f5a49cf2372d9735c8edd173c80f660"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a6f5a49cf2372d9735c8edd173c80f660">parseRegister</a> (char *&amp;line)</td></tr>
 <tr class="separator:a6f5a49cf2372d9735c8edd173c80f660"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0326c702d3127337ef01b97a9ec48f53"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a0326c702d3127337ef01b97a9ec48f53">asmReadOperation</a> (FILE *input)</td></tr>
-<tr class="separator:a0326c702d3127337ef01b97a9ec48f53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65d9f1ad963898f2b00d7e4901b00f2e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a65d9f1ad963898f2b00d7e4901b00f2e">asmReadOperand</a> (FILE *input)</td></tr>
-<tr class="separator:a65d9f1ad963898f2b00d7e4901b00f2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b08266dfdecf957f6eeb6d07460b7cb"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a2b08266dfdecf957f6eeb6d07460b7cb">asmReadRegister</a> (FILE *input)</td></tr>
-<tr class="separator:a2b08266dfdecf957f6eeb6d07460b7cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32d3c26acb825eef61ad23f095afd4b7"><td class="memItemLeft" align="right" valign="top"><a id="a32d3c26acb825eef61ad23f095afd4b7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isLabel</b> (const char *token)</td></tr>
+<tr class="separator:a32d3c26acb825eef61ad23f095afd4b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad23e5d31494ad0f28c393fbc76156dbc"><td class="memItemLeft" align="right" valign="top"><a id="ad23e5d31494ad0f28c393fbc76156dbc"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isJumpOperation</b> (byte opcode)</td></tr>
+<tr class="separator:ad23e5d31494ad0f28c393fbc76156dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe0f6f020b276fe8441abd882b9d0cfa"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#abe0f6f020b276fe8441abd882b9d0cfa">asmReadOperation</a> (FILE *input, int &amp;currentByteOffset)</td></tr>
+<tr class="separator:abe0f6f020b276fe8441abd882b9d0cfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ed4d8ba6dbe851e6f6e106d987c8a68"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a2ed4d8ba6dbe851e6f6e106d987c8a68">asmReadOperation</a> (<a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *assemblyMachine)</td></tr>
+<tr class="separator:a2ed4d8ba6dbe851e6f6e106d987c8a68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c2d8fac78da3dce2eb6ac8d1715a801"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a7c2d8fac78da3dce2eb6ac8d1715a801">asmReadOperand</a> (FILE *input, int &amp;currentByteOffset)</td></tr>
+<tr class="separator:a7c2d8fac78da3dce2eb6ac8d1715a801"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a06f059d641798cb28799b87620c45f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a9a06f059d641798cb28799b87620c45f">asmReadOperand</a> (<a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *assemblyMachine)</td></tr>
+<tr class="separator:a9a06f059d641798cb28799b87620c45f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae35e922edcc12390588146b801cfe605"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#ae35e922edcc12390588146b801cfe605">asmReadRegister</a> (FILE *input, int &amp;currentByteOffset)</td></tr>
+<tr class="separator:ae35e922edcc12390588146b801cfe605"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adecf82570b3f017fd3c543da753a66a6"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#adecf82570b3f017fd3c543da753a66a6">asmReadRegister</a> (<a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *assemblyMachine)</td></tr>
+<tr class="separator:adecf82570b3f017fd3c543da753a66a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca6f5b3828a8e47d743fc4ac0b7ff1de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#aca6f5b3828a8e47d743fc4ac0b7ff1de">asmReadJumpOffset</a> (FILE *input, int &amp;currentByteOffset)</td></tr>
+<tr class="separator:aca6f5b3828a8e47d743fc4ac0b7ff1de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6654db42da3e98dd10b96965711e3193"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a6654db42da3e98dd10b96965711e3193">asmReadJumpOffset</a> (<a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *assemblyMachine)</td></tr>
+<tr class="separator:a6654db42da3e98dd10b96965711e3193"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bd9dd70049fb4e00071d0d73bb8d2a0"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a8bd9dd70049fb4e00071d0d73bb8d2a0">trim</a> (char *s)</td></tr>
 <tr class="separator:a8bd9dd70049fb4e00071d0d73bb8d2a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f4ba585be89a286bd355437c62503ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a7f4ba585be89a286bd355437c62503ec">asmWrite</a> (FILE *output, byte b)</td></tr>
-<tr class="separator:a7f4ba585be89a286bd355437c62503ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9edbcc181a9bcf6dad6fb17ec744a529"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a9edbcc181a9bcf6dad6fb17ec744a529">asmWrite</a> (FILE *output, double value)</td></tr>
-<tr class="separator:a9edbcc181a9bcf6dad6fb17ec744a529"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a498a60dc573893d3a3f56aead81173ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a498a60dc573893d3a3f56aead81173ea">disasmWrite</a> (FILE *output, const char *line)</td></tr>
-<tr class="separator:a498a60dc573893d3a3f56aead81173ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f47b8604eadb580acb3fcb915d090b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a7f47b8604eadb580acb3fcb915d090b4">disasmWriteOperation</a> (FILE *output, const char *operation)</td></tr>
-<tr class="separator:a7f47b8604eadb580acb3fcb915d090b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4885312fc1245dc88292e5f76f8bf7a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a4885312fc1245dc88292e5f76f8bf7a1">disasmWriteOperand</a> (FILE *output, double operand)</td></tr>
-<tr class="separator:a4885312fc1245dc88292e5f76f8bf7a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f8477c32ce0bc64770a4ad1765648d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a0f8477c32ce0bc64770a4ad1765648d8">disasmWriteRegister</a> (FILE *output, const char *regName)</td></tr>
-<tr class="separator:a0f8477c32ce0bc64770a4ad1765648d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1ba3e0a6afe30209ec2f0f86803d1b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#aa1ba3e0a6afe30209ec2f0f86803d1b6">asmWrite</a> (FILE *output, byte b, int &amp;currentByteOffset)</td></tr>
+<tr class="separator:aa1ba3e0a6afe30209ec2f0f86803d1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca7d6bd5b51771d46ed1e17c1d9abc65"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#aca7d6bd5b51771d46ed1e17c1d9abc65">asmWrite</a> (FILE *output, double value, int &amp;currentByteOffset)</td></tr>
+<tr class="separator:aca7d6bd5b51771d46ed1e17c1d9abc65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a598c75948490fc29d0004023eb434a66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a598c75948490fc29d0004023eb434a66">asmWrite</a> (FILE *output, int value, int &amp;currentByteOffset)</td></tr>
+<tr class="separator:a598c75948490fc29d0004023eb434a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of stack machine helper functions. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a65d9f1ad963898f2b00d7e4901b00f2e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a65d9f1ad963898f2b00d7e4901b00f2e">&#9670;&nbsp;</a></span>asmReadOperand()</h2>
+<a id="a6654db42da3e98dd10b96965711e3193"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6654db42da3e98dd10b96965711e3193">&#9670;&nbsp;</a></span>asmReadJumpOffset() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int asmReadJumpOffset </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *&#160;</td>
+          <td class="paramname"><em>assemblyMachine</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads the next jump offset from assembly machine. Increases pc by the number of bytes read. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">assemblyMachine</td><td>assembly machine to read jump offset from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>jump offset. </dd></dl>
+
+</div>
+</div>
+<a id="aca6f5b3828a8e47d743fc4ac0b7ff1de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca6f5b3828a8e47d743fc4ac0b7ff1de">&#9670;&nbsp;</a></span>asmReadJumpOffset() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int asmReadJumpOffset </td>
+          <td>(</td>
+          <td class="paramtype">FILE *&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>currentByteOffset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads the next jump offset from assembly file. Increases offset by the number of bytes read. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>assembly file </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">currentByteOffset</td><td>current offset in bytes </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>jump offset. </dd></dl>
+
+</div>
+</div>
+<a id="a9a06f059d641798cb28799b87620c45f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a06f059d641798cb28799b87620c45f">&#9670;&nbsp;</a></span>asmReadOperand() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double asmReadOperand </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *&#160;</td>
+          <td class="paramname"><em>assemblyMachine</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads the next operand from assembly machine. Increases pc by the number of bytes read. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">assemblyMachine</td><td>assembly machine to read operand from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>operand read. </dd></dl>
+
+</div>
+</div>
+<a id="a7c2d8fac78da3dce2eb6ac8d1715a801"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c2d8fac78da3dce2eb6ac8d1715a801">&#9670;&nbsp;</a></span>asmReadOperand() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -148,14 +246,25 @@ Functions</h2></td></tr>
           <td class="memname">double asmReadOperand </td>
           <td>(</td>
           <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>input</em></td><td>)</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>currentByteOffset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Reads the next double operand from assembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Reads the next double operand from assembly file. Increases offset by the number of bytes read. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>assembly file </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">currentByteOffset</td><td>current offset in bytes </td></tr>
   </table>
   </dd>
 </dl>
@@ -163,8 +272,33 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0326c702d3127337ef01b97a9ec48f53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0326c702d3127337ef01b97a9ec48f53">&#9670;&nbsp;</a></span>asmReadOperation()</h2>
+<a id="a2ed4d8ba6dbe851e6f6e106d987c8a68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ed4d8ba6dbe851e6f6e106d987c8a68">&#9670;&nbsp;</a></span>asmReadOperation() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">byte asmReadOperation </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *&#160;</td>
+          <td class="paramname"><em>assemblyMachine</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads the next operation from assembly machine. Increases pc by the number of bytes read. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">assemblyMachine</td><td>assembly machine to read operation from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>operation code of the operation read. </dd></dl>
+
+</div>
+</div>
+<a id="abe0f6f020b276fe8441abd882b9d0cfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe0f6f020b276fe8441abd882b9d0cfa">&#9670;&nbsp;</a></span>asmReadOperation() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -173,14 +307,25 @@ Functions</h2></td></tr>
           <td class="memname">byte asmReadOperation </td>
           <td>(</td>
           <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>input</em></td><td>)</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>currentByteOffset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Reads the next operation from assembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Reads the next operation from assembly file. Increases offset by the number of bytes read. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>assembly file </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">currentByteOffset</td><td>current offset in bytes </td></tr>
   </table>
   </dd>
 </dl>
@@ -188,8 +333,33 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a2b08266dfdecf957f6eeb6d07460b7cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b08266dfdecf957f6eeb6d07460b7cb">&#9670;&nbsp;</a></span>asmReadRegister()</h2>
+<a id="adecf82570b3f017fd3c543da753a66a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adecf82570b3f017fd3c543da753a66a6">&#9670;&nbsp;</a></span>asmReadRegister() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">byte asmReadRegister </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *&#160;</td>
+          <td class="paramname"><em>assemblyMachine</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads the next register from assembly machine. Increases pc by the number of bytes read. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">assemblyMachine</td><td>stack machine to read register from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>register number read, or ERR_INVALID_REGISTER, if register number is invalid. </dd></dl>
+
+</div>
+</div>
+<a id="ae35e922edcc12390588146b801cfe605"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae35e922edcc12390588146b801cfe605">&#9670;&nbsp;</a></span>asmReadRegister() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,14 +368,25 @@ Functions</h2></td></tr>
           <td class="memname">byte asmReadRegister </td>
           <td>(</td>
           <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>input</em></td><td>)</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>currentByteOffset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Reads the next register from assembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Reads the next register from assembly file. Increases offset by the number of bytes read. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>assembly file </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">currentByteOffset</td><td>current offset in bytes </td></tr>
   </table>
   </dd>
 </dl>
@@ -213,8 +394,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7f4ba585be89a286bd355437c62503ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f4ba585be89a286bd355437c62503ec">&#9670;&nbsp;</a></span>asmWrite() <span class="overload">[1/2]</span></h2>
+<a id="aa1ba3e0a6afe30209ec2f0f86803d1b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1ba3e0a6afe30209ec2f0f86803d1b6">&#9670;&nbsp;</a></span>asmWrite() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -229,7 +410,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">byte&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>currentByteOffset</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -238,18 +425,19 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Writes operation code into the assembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Writes byte into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>assembly file </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">b</td><td>operation code to write </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">b</td><td>byte to write </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">currentByteOffset</td><td>current offset in bytes </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a9edbcc181a9bcf6dad6fb17ec744a529"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9edbcc181a9bcf6dad6fb17ec744a529">&#9670;&nbsp;</a></span>asmWrite() <span class="overload">[2/2]</span></h2>
+<a id="aca7d6bd5b51771d46ed1e17c1d9abc65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca7d6bd5b51771d46ed1e17c1d9abc65">&#9670;&nbsp;</a></span>asmWrite() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -264,7 +452,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>currentByteOffset</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -273,24 +467,25 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Writes double operand into the assembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Writes double operand into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>assembly file </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>operand to write </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">currentByteOffset</td><td>current offset in bytes </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a498a60dc573893d3a3f56aead81173ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a498a60dc573893d3a3f56aead81173ea">&#9670;&nbsp;</a></span>disasmWrite()</h2>
+<a id="a598c75948490fc29d0004023eb434a66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a598c75948490fc29d0004023eb434a66">&#9670;&nbsp;</a></span>asmWrite() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void disasmWrite </td>
+          <td class="memname">void asmWrite </td>
           <td>(</td>
           <td class="paramtype">FILE *&#160;</td>
           <td class="paramname"><em>output</em>, </td>
@@ -298,8 +493,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>line</em>&#160;</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>currentByteOffset</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -308,115 +509,11 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Writes C-string into the disassembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Writes int operand into the assembly file and increases offset by number of written bytes. If output file is null, just increases offset (fake write). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>disassembly file </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">line</td><td>string to write </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a4885312fc1245dc88292e5f76f8bf7a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4885312fc1245dc88292e5f76f8bf7a1">&#9670;&nbsp;</a></span>disasmWriteOperand()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void disasmWriteOperand </td>
-          <td>(</td>
-          <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>operand</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Writes double operand into the disassembly file. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>disassembly file </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">operand</td><td>operand to write </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a7f47b8604eadb580acb3fcb915d090b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f47b8604eadb580acb3fcb915d090b4">&#9670;&nbsp;</a></span>disasmWriteOperation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void disasmWriteOperation </td>
-          <td>(</td>
-          <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>operation</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Writes operation name into the disassembly file. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>disassembly file </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">operation</td><td>operation name to write </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a0f8477c32ce0bc64770a4ad1765648d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f8477c32ce0bc64770a4ad1765648d8">&#9670;&nbsp;</a></span>disasmWriteRegister()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void disasmWriteRegister </td>
-          <td>(</td>
-          <td class="paramtype">FILE *&#160;</td>
-          <td class="paramname"><em>output</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>regName</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Writes register name into the disassembly file. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>disassembly file </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">regName</td><td>register name to write </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">output</td><td>assembly file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">value</td><td>operand to write </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">currentByteOffset</td><td>current offset in bytes </td></tr>
   </table>
   </dd>
 </dl>

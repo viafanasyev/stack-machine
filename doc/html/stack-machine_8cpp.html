@@ -82,6 +82,7 @@ $(function() {
 <code>#include &lt;cstdio&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;cstdlib&gt;</code><br />
+<code>#include &lt;sys/stat.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="stack_8h_source.html">immortal-stack/stack.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="stack-machine_8h_source.html">stack-machine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="stack-machine-utils_8h_source.html">stack-machine-utils.h</a>&quot;</code><br />
@@ -143,14 +144,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Assembles the given source code file into the assembly file. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Assembles the given source code file into the assembly file. Assembly is performed in two runs: first run resolves labels, second one generates resulting .asm file. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">inputFileName</td><td>source code file name </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">outputFileName</td><td>resulting assembly file name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if assembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; -1, if any other error occurred (such as invalid input file). </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if assembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_INVALID_LABEL, if invalid label was met; -1, if any other error occurred (such as invalid input file). </dd></dl>
 
 </div>
 </div>
@@ -186,7 +187,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if disassembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; -1, if any other error occurred (such as invalid input file). </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if disassembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_INVALID_LABEL, if invalid offset was met; -1, if any other error occurred (such as invalid input file). </dd></dl>
 
 </div>
 </div>

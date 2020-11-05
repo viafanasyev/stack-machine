@@ -1,0 +1,6 @@
+IN
+IN
+ADD
+SQRT
+OUT
+HLT

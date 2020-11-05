@@ -25,6 +25,8 @@ NOTE: This program works only on UNIX-like OS.
     * stack-machine-tests.cpp : Tests for stack machine.
     * main.cpp : Entry point for tests. Just runs all tests.
 
+* examples/ : Files with code of examples given below
+
 * doc/ : doxygen documentation
 
 * Doxyfile : doxygen config file
@@ -75,7 +77,7 @@ Labels have to be written on separate lines, can not contain spaces and must end
 
 ##### Examples
 
-Example program (square root of sum):
+Example program 1 (square root of sum):
 ```
 IN
 IN
@@ -108,6 +110,8 @@ OUT
 JMP START
 HLT        <-- Not necessary
 ```
+
+All examples can be found in `examples` directory.
 
 #### Tests
 

@@ -390,14 +390,14 @@ int run(const char* inputFileName) {
     }
     stackMachine.pc = 0;
 
-    byte opcode = ERR_INVALID_OPERATION;
-    while (opcode != HLT_OPCODE) {
-        if (isError(opcode = processNextOperation(&stackMachine))) return opcode;
-    }
+    byte opcode = 0;
+    do {
+        if (isError(opcode = processNextOperation(&stackMachine))) break;
+    } while (opcode != HLT_OPCODE);
 
     free(stackMachine.assembly);
     free(stackMachine.registers);
     destructStack(&stackMachine.stack);
     fclose(input);
-    return 0;
+    return opcode;
 }

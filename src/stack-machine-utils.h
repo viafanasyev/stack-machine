@@ -6,6 +6,7 @@
 #define STACK_MACHINE_STACK_MACHINE_UTILS_H
 
 #include <cstdio>
+#include <cstring>
 #include <map>
 #include <vector>
 

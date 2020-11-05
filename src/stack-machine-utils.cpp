@@ -80,7 +80,7 @@ void DisassemblyBuffer::writeOperation(const char* operation) {
 
     char* line = (char*)calloc(MAX_LINE_LENGTH, sizeof(char));
     strcpy(line, operation);
-    lines.push_back(line);
+    lines.emplace_back(line, sizeof(byte));
 }
 
 /**
@@ -90,7 +90,8 @@ void DisassemblyBuffer::writeOperation(const char* operation) {
 void DisassemblyBuffer::writeOperand(double operand) {
     char line[MAX_LINE_LENGTH];
     sprintf(line, " %lg", operand);
-    strcat(lines.back(), line);
+    strcat(lines.back().first, line);
+    lines.back().second += sizeof(double);
 }
 
 /**
@@ -100,8 +101,9 @@ void DisassemblyBuffer::writeOperand(double operand) {
 void DisassemblyBuffer::writeRegister(const char* regName) {
     assert(regName != nullptr);
 
-    strcat(lines.back(), " ");
-    strcat(lines.back(), regName);
+    strcat(lines.back().first, " ");
+    strcat(lines.back().first, regName);
+    lines.back().second += sizeof(byte);
 }
 
 /**
@@ -112,8 +114,9 @@ void DisassemblyBuffer::writeRegister(const char* regName) {
 void DisassemblyBuffer::writeJumpLabelArgument(int labelOffset) {
     assert(labelOffset >= 0);
 
-    strcat(lines.back(), " ");
-    strcat(lines.back(), getLabelByOffset(labelOffset));
+    strcat(lines.back().first, " ");
+    strcat(lines.back().first, getLabelByOffset(labelOffset));
+    lines.back().second += sizeof(int);
 }
 
 /**
@@ -141,19 +144,28 @@ const char* DisassemblyBuffer::getLabelByOffset(int labelOffset) {
 byte DisassemblyBuffer::flushToFile(FILE* output) {
     assert(output != nullptr);
 
-    for (size_t i = 0; i < lines.size(); ++i) {
-        if (labels.count(i) != 0) {
-            char* label = labels[i];
+    int currentByteOffset = 0;
+    for (auto& i : lines) {
+        if (labels.count(currentByteOffset) != 0) {
+            char* label = labels[currentByteOffset];
             fprintf(output, "%s:\n", label);
             free(label);
-            labels.erase(i);
+            labels.erase(currentByteOffset);
         }
 
-        char* line = lines[i];
+        char* line = i.first;
         fprintf(output, "%s\n", line);
+        currentByteOffset += i.second;
         free(line);
     }
     lines.clear();
+
+    if (labels.count(currentByteOffset) != 0) {
+        char* label = labels[currentByteOffset];
+        fprintf(output, "%s:\n", label);
+        free(label);
+        labels.erase(currentByteOffset);
+    }
 
     // If there are any labels left after the code, then they are invalid, because they point to an empty fragment
     if (!labels.empty()) {

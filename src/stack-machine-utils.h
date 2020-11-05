@@ -88,7 +88,10 @@ class DisassemblyBuffer {
     constexpr static unsigned int MAX_LINE_LENGTH = 256u;
     constexpr static unsigned int MAX_LABEL_LENGTH = 12u; // 1 ('L') + 10 (max int length) + 1 ('\0')
 
-    std::vector<char*> lines;
+    /** Contains lines to output in the file with the offset delta associated with this line **/
+    std::vector<std::pair<char*, int>> lines;
+
+    /** Contains labels mapped by their offset **/
     std::map<unsigned int, char*> labels;
 
 public:

@@ -136,8 +136,8 @@ Functions</h2></td></tr>
 <tr class="separator:aca6f5b3828a8e47d743fc4ac0b7ff1de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6654db42da3e98dd10b96965711e3193"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a6654db42da3e98dd10b96965711e3193">asmReadJumpOffset</a> (<a class="el" href="struct_assembly_machine.html">AssemblyMachine</a> *assemblyMachine)</td></tr>
 <tr class="separator:a6654db42da3e98dd10b96965711e3193"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bd9dd70049fb4e00071d0d73bb8d2a0"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a8bd9dd70049fb4e00071d0d73bb8d2a0">trim</a> (char *s)</td></tr>
-<tr class="separator:a8bd9dd70049fb4e00071d0d73bb8d2a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac96e2caeaafd040ce1a3cdeb32d76075"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#ac96e2caeaafd040ce1a3cdeb32d76075">trim</a> (char *&amp;s)</td></tr>
+<tr class="separator:ac96e2caeaafd040ce1a3cdeb32d76075"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1ba3e0a6afe30209ec2f0f86803d1b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#aa1ba3e0a6afe30209ec2f0f86803d1b6">asmWrite</a> (FILE *output, byte b, int &amp;currentByteOffset)</td></tr>
 <tr class="separator:aa1ba3e0a6afe30209ec2f0f86803d1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca7d6bd5b51771d46ed1e17c1d9abc65"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#aca7d6bd5b51771d46ed1e17c1d9abc65">asmWrite</a> (FILE *output, double value, int &amp;currentByteOffset)</td></tr>
@@ -793,8 +793,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a8bd9dd70049fb4e00071d0d73bb8d2a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8bd9dd70049fb4e00071d0d73bb8d2a0">&#9670;&nbsp;</a></span>trim()</h2>
+<a id="ac96e2caeaafd040ce1a3cdeb32d76075"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac96e2caeaafd040ce1a3cdeb32d76075">&#9670;&nbsp;</a></span>trim()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -802,7 +802,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">char* trim </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">char *&amp;&#160;</td>
           <td class="paramname"><em>s</em></td><td>)</td>
           <td></td>
         </tr>
@@ -810,7 +810,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Removes leading and trailing space characters (whitespaces, '\n', '\t', etc) from the given C-string. Note that the given string is also changed. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">line</td><td>string to remove spaces, '\n', etc from </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">s</td><td>string to remove spaces, '\n', etc from </td></tr>
   </table>
   </dd>
 </dl>

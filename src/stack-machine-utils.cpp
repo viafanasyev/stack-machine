@@ -493,10 +493,10 @@ int asmReadJumpOffset(AssemblyMachine* assemblyMachine) {
 
 /**
  * Removes leading and trailing space characters (whitespaces, '\\n', '\\t', etc) from the given C-string. Note that the given string is also changed.
- * @param[in, out] line string to remove spaces, '\\n', etc from
+ * @param[in, out] s string to remove spaces, '\\n', etc from
  * @return string without leading and trailing space characters.
  */
-char* trim(char* s) {
+char* trim(char*& s) {
     assert(s != nullptr);
 
     // Remove leading whitespaces

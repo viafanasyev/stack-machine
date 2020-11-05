@@ -198,8 +198,18 @@ double parseOperand(char*& line);
  */
 unsigned char parseRegister(char*& line);
 
+/**
+ * Checks if the given token is a label (doesn't contain spaces and ends with ':' symbol).
+ * @param token  token to check
+ * @return true, if the given token is a label, false otherwise.
+ */
 bool isLabel(const char* token);
 
+/**
+ * Checks if the give opcode is the jump operation.
+ * @param opcode operation code to check
+ * @return true, if the given operation is jump operation, false otherwise.
+ */
 bool isJumpOperation(unsigned char opcode);
 
 /**

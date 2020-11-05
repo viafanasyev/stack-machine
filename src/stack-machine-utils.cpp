@@ -341,6 +341,11 @@ byte parseRegister(char*& line) {
     return getRegisterNumberByName(getNextToken(line));
 }
 
+/**
+ * Checks if the given token is a label (doesn't contain spaces and ends with ':' symbol).
+ * @param[in] token token to check
+ * @return true, if the given token is a label, false otherwise.
+ */
 bool isLabel(const char* token) {
     const char* end = token + strlen(token) - 1;
     while (end > token && isspace(*end) && (*end != ':')) {
@@ -356,6 +361,11 @@ bool isLabel(const char* token) {
     }
 }
 
+/**
+ * Checks if the give opcode is the jump operation.
+ * @param[in] opcode operation code to check
+ * @return true, if the given operation is jump operation, false otherwise.
+ */
 bool isJumpOperation(byte opcode) {
     return opcode == JMP_OPCODE;
 }

@@ -116,11 +116,9 @@ Functions</h2></td></tr>
 <tr class="separator:ab9829009112576d0e961a0bd4b1d81a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f5a49cf2372d9735c8edd173c80f660"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a6f5a49cf2372d9735c8edd173c80f660">parseRegister</a> (char *&amp;line)</td></tr>
 <tr class="separator:a6f5a49cf2372d9735c8edd173c80f660"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32d3c26acb825eef61ad23f095afd4b7"><td class="memItemLeft" align="right" valign="top"><a id="a32d3c26acb825eef61ad23f095afd4b7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isLabel</b> (const char *token)</td></tr>
+<tr class="memitem:a32d3c26acb825eef61ad23f095afd4b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a32d3c26acb825eef61ad23f095afd4b7">isLabel</a> (const char *token)</td></tr>
 <tr class="separator:a32d3c26acb825eef61ad23f095afd4b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad23e5d31494ad0f28c393fbc76156dbc"><td class="memItemLeft" align="right" valign="top"><a id="ad23e5d31494ad0f28c393fbc76156dbc"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isJumpOperation</b> (byte opcode)</td></tr>
+<tr class="memitem:ad23e5d31494ad0f28c393fbc76156dbc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#ad23e5d31494ad0f28c393fbc76156dbc">isJumpOperation</a> (byte opcode)</td></tr>
 <tr class="separator:ad23e5d31494ad0f28c393fbc76156dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe0f6f020b276fe8441abd882b9d0cfa"><td class="memItemLeft" align="right" valign="top">byte&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#abe0f6f020b276fe8441abd882b9d0cfa">asmReadOperation</a> (FILE *input, int &amp;currentByteOffset)</td></tr>
 <tr class="separator:abe0f6f020b276fe8441abd882b9d0cfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -667,6 +665,56 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isJumpOperation</b> (
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>register number, or ERR_INVALID_REGISTER if register is invalid. </dd></dl>
+
+</div>
+</div>
+<a id="ad23e5d31494ad0f28c393fbc76156dbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad23e5d31494ad0f28c393fbc76156dbc">&#9670;&nbsp;</a></span>isJumpOperation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isJumpOperation </td>
+          <td>(</td>
+          <td class="paramtype">byte&#160;</td>
+          <td class="paramname"><em>opcode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks if the give opcode is the jump operation. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">opcode</td><td>operation code to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true, if the given operation is jump operation, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a32d3c26acb825eef61ad23f095afd4b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32d3c26acb825eef61ad23f095afd4b7">&#9670;&nbsp;</a></span>isLabel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isLabel </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>token</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks if the given token is a label (doesn't contain spaces and ends with ':' symbol). </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">token</td><td>token to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true, if the given token is a label, false otherwise. </dd></dl>
 
 </div>
 </div>

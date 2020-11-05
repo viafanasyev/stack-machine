@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['trim_130',['trim',['../stack-machine-utils_8cpp.html#a8bd9dd70049fb4e00071d0d73bb8d2a0',1,'trim(char *s):&#160;stack-machine-utils.cpp'],['../stack-machine-utils_8h.html#a2029b048f081fd08533dc612e962fcdf',1,'trim(char *line):&#160;stack-machine-utils.cpp']]]
+  ['run_132',['run',['../class_test.html#a65ec5becbadad3887dadc7db7ed54b29',1,'Test::run()'],['../stack-machine_8cpp.html#abd207748b2825c96cd3e78a773a6a42f',1,'run(const char *inputFileName):&#160;stack-machine.cpp'],['../stack-machine_8h.html#abd207748b2825c96cd3e78a773a6a42f',1,'run(const char *inputFileName):&#160;stack-machine.cpp']]],
+  ['runalltests_133',['runAllTests',['../class_test_runner.html#ac932511328802eb63e9b37ca02a62b9a',1,'TestRunner']]]
 ];

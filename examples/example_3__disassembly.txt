@@ -1,0 +1,6 @@
+L0:
+IN
+SQRT
+OUT
+JMP L0
+HLT

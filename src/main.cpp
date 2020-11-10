@@ -17,7 +17,7 @@ enum runningMode {
 
 static constexpr size_t maxFileNameLength = 256;
 static const char* assemblyFileExtension = ".asm";
-static const char* disassemblyFileExtension = ".txt";
+static const char* disassemblyFileExtension = "__disassembly.txt";
 
 struct arguments {
     runningMode mode;

@@ -41,7 +41,7 @@ cmake . && make
 ./stack-machine --help                          # To see help
 ./stack-machine --asm file.txt                  # To assemble file with code. Result is put in file.asm
 ./stack-machine --asm file1.txt -o file2.asm    # To assemble file with code. Result is put in file2.asm
-./stack-machine --disasm file.asm               # To disassemble asm file. Result is put in file.txt
+./stack-machine --disasm file.asm               # To disassemble asm file. Result is put in file__disassembly.txt
 ./stack-machine --disasm file1.asm -o file2.txt # To disassemble asm file. Result is put in file2.txt
 ./stack-machine --run file.asm                  # To run asm file
 ```

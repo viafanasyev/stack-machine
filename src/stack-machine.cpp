@@ -13,6 +13,9 @@
 #define STACK_TYPE double
 #include "immortal-stack/stack.h"
 #undef STACK_TYPE
+#define STACK_TYPE int
+#include "immortal-stack/stack.h"
+#undef STACK_TYPE
 
 #include "stack-machine.h"
 #include "stack-machine-utils.h"
@@ -21,6 +24,7 @@ using byte = unsigned char;
 
 struct StackMachine : AssemblyMachine {
     Stack_double stack;
+    Stack_int callStack;
 };
 
 /**
@@ -35,6 +39,7 @@ static byte processOperation(StackMachine* stackMachine, byte opcode) {
     assert(stackMachine != nullptr);
 
     Stack_double* stack = &stackMachine->stack;
+    Stack_int* callStack = &stackMachine->callStack;
 
     if (opcode == IN_OPCODE) {
         double inputValue = NAN;
@@ -82,6 +87,11 @@ static byte processOperation(StackMachine* stackMachine, byte opcode) {
         if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
 
         push(stack, top(stack));
+    } else if (opcode == RET_OPCODE) {
+        if (getStackSize(callStack) < 1) return ERR_STACK_UNDERFLOW;
+
+        int returnAddress = pop(callStack);
+        stackMachine->pc = returnAddress;
     } else if (opcode == HLT_OPCODE) {
         /* Do nothing */
     } else {
@@ -120,19 +130,20 @@ static byte processOperation(StackMachine* stackMachine, byte opcode, double& op
  * Processes the jump operation with the given stack.
  * @param[in, out] stackMachine stack machine to use in operation
  * @param[in]      opcode       code of the jump operation to process
- * @param[in, out] jumpOffset   offset of the jump to process
+ * @param[in]      jumpOffset   offset of the jump to process
  * @return given operation code, if operation processed successfully;
  *         ERR_INVALID_OPERATION, if operation code or offset was invalid;
  *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
-static byte processJumpOperation(StackMachine* stackMachine, byte opcode, int& jumpOffset) {
+static byte processJumpOperation(StackMachine* stackMachine, byte opcode, int jumpOffset) {
     assert(stackMachine != nullptr);
     assert(isJumpOperation(opcode));
 
     Stack_double* stack = &stackMachine->stack;
+    Stack_int* callStack = &stackMachine->callStack;
 
     double lhs = NAN, rhs = NAN;
-    if (opcode != JMP_OPCODE) {
+    if (opcode != JMP_OPCODE && opcode != CALL_OPCODE) {
         if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
         rhs = pop(stack); lhs = pop(stack);
     }
@@ -155,6 +166,9 @@ static byte processJumpOperation(StackMachine* stackMachine, byte opcode, int& j
         case JMPGE_OPCODE:
             if (lhs >= rhs) break;
             return opcode;
+        case CALL_OPCODE:
+            push(callStack, stackMachine->pc);
+            break;
         case JMP_OPCODE:
             break;
         default:
@@ -412,6 +426,7 @@ int run(const char* inputFileName) {
 
     StackMachine stackMachine;
     constructStack(&stackMachine.stack);
+    constructStack(&stackMachine.callStack);
     stackMachine.registers = (double*)calloc(REGISTERS_NUMBER, sizeof(double));
     stackMachine.assemblySize = fileStat.st_size;
     stackMachine.assembly = (byte*)calloc(stackMachine.assemblySize, sizeof(byte));
@@ -427,6 +442,7 @@ int run(const char* inputFileName) {
 
     free(stackMachine.assembly);
     free(stackMachine.registers);
+    destructStack(&stackMachine.callStack);
     destructStack(&stackMachine.stack);
     fclose(input);
     return opcode;

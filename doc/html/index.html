@@ -129,6 +129,8 @@ Available operations</h4>
 <div class="line">JMPLE LABEL # Pop two values from the stack and jump to the given label if (lhs &lt;= rhs)</div>
 <div class="line">JMPG LABEL  # Pop two values from the stack and jump to the given label if (lhs &gt;  rhs)</div>
 <div class="line">JMPGE LABEL # Pop two values from the stack and jump to the given label if (lhs &gt;= rhs)</div>
+<div class="line">CALL LABEL  # Put return address (PC of the command after this operation) on call stack and jump to the given label</div>
+<div class="line">RET         # Pop return address from call stack and move PC to that address</div>
 <div class="line">HLT         # Stop the program</div>
 <div class="line"> </div>
 <div class="line">* rhs - value on top of the stack, lhs - value under rhs</div>
@@ -163,6 +165,17 @@ Examples</h4>
 <div class="line">OUT</div>
 <div class="line">JMP START</div>
 <div class="line">HLT        &lt;-- Not necessary</div>
+</div><!-- fragment --><p>Example program 4 (call-ret demonstration): </p><div class="fragment"><div class="line">IN</div>
+<div class="line">IN</div>
+<div class="line">CALL DOUBLE_SUM</div>
+<div class="line">OUT</div>
+<div class="line">HLT</div>
+<div class="line"> </div>
+<div class="line">DOUBLE_SUM:</div>
+<div class="line">ADD</div>
+<div class="line">DUP</div>
+<div class="line">ADD</div>
+<div class="line">RET</div>
 </div><!-- fragment --><p>All examples can be found in <code>examples</code> directory.</p>
 <h3><a class="anchor" id="autotoc_md7"></a>
 Tests</h3>

@@ -204,6 +204,8 @@ byte getOpcodeByOperationName(const char* operation) {
     if (strcmp(operation, "JMPLE") == 0) return JMPLE_OPCODE;
     if (strcmp(operation, "JMPG" ) == 0) return JMPG_OPCODE ;
     if (strcmp(operation, "JMPGE") == 0) return JMPGE_OPCODE;
+    if (strcmp(operation, "RET"  ) == 0) return RET_OPCODE  ;
+    if (strcmp(operation, "CALL" ) == 0) return CALL_OPCODE ;
     return ERR_INVALID_OPERATION;
 }
 
@@ -232,6 +234,8 @@ const char* getOperationNameByOpcode(byte opcode) {
         case JMPLE_OPCODE: return "JMPLE";
         case JMPG_OPCODE:  return "JMPG" ;
         case JMPGE_OPCODE: return "JMPGE";
+        case RET_OPCODE:   return "RET"  ;
+        case CALL_OPCODE:  return "CALL" ;
         default: return nullptr;
     }
 }
@@ -252,6 +256,7 @@ byte getOperationArityByOpcode(byte opcode) {
         case DIV_OPCODE:
         case SQRT_OPCODE:
         case DUP_OPCODE:
+        case RET_OPCODE:
         case HLT_OPCODE:
             return 0;
         case PUSH_OPCODE:
@@ -264,6 +269,7 @@ byte getOperationArityByOpcode(byte opcode) {
         case JMPLE_OPCODE:
         case JMPG_OPCODE:
         case JMPGE_OPCODE:
+        case CALL_OPCODE:
             return 1;
         default:
             return ERR_INVALID_OPERATION;
@@ -406,7 +412,8 @@ bool isJumpOperation(byte opcode) {
            opcode == JMPL_OPCODE  ||
            opcode == JMPLE_OPCODE ||
            opcode == JMPG_OPCODE  ||
-           opcode == JMPGE_OPCODE;
+           opcode == JMPGE_OPCODE ||
+           opcode == CALL_OPCODE;
 }
 
 /**

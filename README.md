@@ -71,6 +71,8 @@ JMPL LABEL  # Pop two values from the stack and jump to the given label if (lhs 
 JMPLE LABEL # Pop two values from the stack and jump to the given label if (lhs <= rhs)
 JMPG LABEL  # Pop two values from the stack and jump to the given label if (lhs >  rhs)
 JMPGE LABEL # Pop two values from the stack and jump to the given label if (lhs >= rhs)
+CALL LABEL  # Put return address (PC of the command after this operation) on call stack and jump to the given label
+RET         # Pop return address from call stack and move PC to that address
 HLT         # Stop the program
 
 * rhs - value on top of the stack, lhs - value under rhs
@@ -118,6 +120,21 @@ SQRT
 OUT
 JMP START
 HLT        <-- Not necessary
+```
+
+Example program 4 (call-ret demonstration):
+```
+IN
+IN
+CALL DOUBLE_SUM
+OUT
+HLT
+
+DOUBLE_SUM:
+ADD
+DUP
+ADD
+RET
 ```
 
 All examples can be found in `examples` directory.

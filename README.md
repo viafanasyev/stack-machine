@@ -52,19 +52,28 @@ Only one --asm, --disasm, --run option could be used at the time.
 
 File with code can contain next operations:
 ```
-IN        # Read double value from console and put it on stack
-OUT       # Pop value from stack and write it in console
-POP       # Pop value from stack
-POP AX    # Pop value from stack and put it into register
-PUSH 1.5  # Put the given value on top of the stack
-PUSH AX   # Put the value from register on top of the stack
-ADD       # Pop two values from stack and put the addition result on top of the stack 
-SUB       # Pop two values from stack and put the substraction result on top of the stack
-MUL       # Pop two values from stack and put the multiplication result on top of the stack
-DIV       # Pop two values from stack and put the division result on top of the stack
-SQRT      # Pop one value from stack and put the square root on top of the stack
-JMP LABEL # Unconditional jump to the given label
-HLT       # Stop the program
+IN          # Read double value from console and put it on stack
+OUT         # Pop value from stack and write it in console
+POP         # Pop value from stack
+POP AX      # Pop value from stack and put it into register
+PUSH 1.5    # Put the given value on top of the stack
+PUSH AX     # Put the value from register on top of the stack
+ADD         # Pop two values from stack and put (lhs + rhs) on top of the stack
+SUB         # Pop two values from stack and put (lhs - rhs) on top of the stack
+MUL         # Pop two values from stack and put (lhs * rhs) on top of the stack
+DIV         # Pop two values from stack and put (lhs / rhs) on top of the stack
+SQRT        # Pop one value from stack and put the square root on top of the stack
+DUP         # Duplicates value on top of the stack
+JMP LABEL   # Unconditional jump to the given label
+JMPE LABEL  # Pop two values from the stack and jump to the given label if (lhs == rhs) (compared using 1e-9 epsilon)
+JMPNE LABEL # Pop two values from the stack and jump to the given label if (lhs != rhs) (compared using 1e-9 epsilon)
+JMPL LABEL  # Pop two values from the stack and jump to the given label if (lhs <  rhs)
+JMPLE LABEL # Pop two values from the stack and jump to the given label if (lhs <= rhs)
+JMPG LABEL  # Pop two values from the stack and jump to the given label if (lhs >  rhs)
+JMPGE LABEL # Pop two values from the stack and jump to the given label if (lhs >= rhs)
+HLT         # Stop the program
+
+* rhs - value on top of the stack, lhs - value under rhs
 ```
 
 Program should end with `HLT` command, otherwise it's behaviour is undefined.  

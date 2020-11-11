@@ -10,17 +10,26 @@
 #include <map>
 #include <vector>
 
-#define IN_OPCODE   0b00000001u
-#define OUT_OPCODE  0b00000010u
-#define POP_OPCODE  0b00000100u
-#define PUSH_OPCODE 0b00000101u
-#define ADD_OPCODE  0b00001000u
-#define SUB_OPCODE  0b00001001u
-#define MUL_OPCODE  0b00001010u
-#define DIV_OPCODE  0b00001011u
-#define SQRT_OPCODE 0b00001100u
-#define JMP_OPCODE  0b00100000u
-#define HLT_OPCODE  0b00000000u
+#define IN_OPCODE    0b00000001u
+#define OUT_OPCODE   0b00000010u
+#define POP_OPCODE   0b00000100u
+#define PUSH_OPCODE  0b00000101u
+#define ADD_OPCODE   0b00001000u
+#define SUB_OPCODE   0b00001001u
+#define MUL_OPCODE   0b00001010u
+#define DIV_OPCODE   0b00001011u
+#define SQRT_OPCODE  0b00001100u
+#define DUP_OPCODE   0b00001101u
+
+#define JMP_OPCODE   0b00100000u
+#define JMPNE_OPCODE 0b00100010u // !=
+#define JMPE_OPCODE  0b00100011u // ==
+#define JMPL_OPCODE  0b00100100u // <
+#define JMPLE_OPCODE 0b00100101u // <=
+#define JMPG_OPCODE  0b00100110u // >
+#define JMPGE_OPCODE 0b00100111u // >=
+
+#define HLT_OPCODE   0b00000000u
 
 #define ERR_INVALID_OPERATION   0b11111111u
 #define ERR_INVALID_REGISTER    0b11111110u
@@ -32,6 +41,8 @@
 
 #define PUSHR_OPCODE (PUSH_OPCODE | IS_REG_OP_MASK)
 #define POPR_OPCODE  (POP_OPCODE  | IS_REG_OP_MASK)
+
+#define COMPARE_EPS 1e-9
 
 struct AssemblyMachine {
     double* registers = nullptr;
@@ -190,7 +201,7 @@ unsigned char parseOperation(char*& line);
  * Parses first possible double operand from the given string.
  * Note that the given string is also modified (pointer moved to the next token).
  * @param[in, out] line string to parse operand from
- * @return parsed operand, or FP_NAN if operand is invalid.
+ * @return parsed operand, or NAN if operand is invalid.
  */
 double parseOperand(char*& line);
 

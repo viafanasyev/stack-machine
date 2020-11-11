@@ -186,17 +186,24 @@ byte DisassemblyBuffer::flushToFile(FILE* output) {
 byte getOpcodeByOperationName(const char* operation) {
     assert(operation != nullptr);
 
-    if (strcmp(operation, "IN"  ) == 0) return IN_OPCODE  ;
-    if (strcmp(operation, "OUT" ) == 0) return OUT_OPCODE ;
-    if (strcmp(operation, "POP" ) == 0) return POP_OPCODE ;
-    if (strcmp(operation, "PUSH") == 0) return PUSH_OPCODE;
-    if (strcmp(operation, "ADD" ) == 0) return ADD_OPCODE ;
-    if (strcmp(operation, "SUB" ) == 0) return SUB_OPCODE ;
-    if (strcmp(operation, "MUL" ) == 0) return MUL_OPCODE ;
-    if (strcmp(operation, "DIV" ) == 0) return DIV_OPCODE ;
-    if (strcmp(operation, "SQRT") == 0) return SQRT_OPCODE;
-    if (strcmp(operation, "HLT" ) == 0) return HLT_OPCODE ;
-    if (strcmp(operation, "JMP" ) == 0) return JMP_OPCODE ;
+    if (strcmp(operation, "IN"   ) == 0) return IN_OPCODE   ;
+    if (strcmp(operation, "OUT"  ) == 0) return OUT_OPCODE  ;
+    if (strcmp(operation, "POP"  ) == 0) return POP_OPCODE  ;
+    if (strcmp(operation, "PUSH" ) == 0) return PUSH_OPCODE ;
+    if (strcmp(operation, "ADD"  ) == 0) return ADD_OPCODE  ;
+    if (strcmp(operation, "SUB"  ) == 0) return SUB_OPCODE  ;
+    if (strcmp(operation, "MUL"  ) == 0) return MUL_OPCODE  ;
+    if (strcmp(operation, "DIV"  ) == 0) return DIV_OPCODE  ;
+    if (strcmp(operation, "SQRT" ) == 0) return SQRT_OPCODE ;
+    if (strcmp(operation, "DUP"  ) == 0) return DUP_OPCODE  ;
+    if (strcmp(operation, "HLT"  ) == 0) return HLT_OPCODE  ;
+    if (strcmp(operation, "JMP"  ) == 0) return JMP_OPCODE  ;
+    if (strcmp(operation, "JMPNE") == 0) return JMPNE_OPCODE;
+    if (strcmp(operation, "JMPE" ) == 0) return JMPE_OPCODE ;
+    if (strcmp(operation, "JMPL" ) == 0) return JMPL_OPCODE ;
+    if (strcmp(operation, "JMPLE") == 0) return JMPLE_OPCODE;
+    if (strcmp(operation, "JMPG" ) == 0) return JMPG_OPCODE ;
+    if (strcmp(operation, "JMPGE") == 0) return JMPGE_OPCODE;
     return ERR_INVALID_OPERATION;
 }
 
@@ -207,17 +214,24 @@ byte getOpcodeByOperationName(const char* operation) {
  */
 const char* getOperationNameByOpcode(byte opcode) {
     switch (opcode) {
-        case IN_OPCODE:   return "IN"  ;
-        case OUT_OPCODE:  return "OUT" ;
-        case POP_OPCODE:  case POPR_OPCODE:  return "POP" ;
-        case PUSH_OPCODE: case PUSHR_OPCODE: return "PUSH";
-        case ADD_OPCODE:  return "ADD" ;
-        case SUB_OPCODE:  return "SUB" ;
-        case MUL_OPCODE:  return "MUL" ;
-        case DIV_OPCODE:  return "DIV" ;
-        case SQRT_OPCODE: return "SQRT";
-        case HLT_OPCODE:  return "HLT" ;
-        case JMP_OPCODE:  return "JMP" ;
+        case IN_OPCODE:    return "IN"   ;
+        case OUT_OPCODE:   return "OUT"  ;
+        case POP_OPCODE:   case POPR_OPCODE:  return "POP" ;
+        case PUSH_OPCODE:  case PUSHR_OPCODE: return "PUSH";
+        case ADD_OPCODE:   return "ADD"  ;
+        case SUB_OPCODE:   return "SUB"  ;
+        case MUL_OPCODE:   return "MUL"  ;
+        case DIV_OPCODE:   return "DIV"  ;
+        case SQRT_OPCODE:  return "SQRT" ;
+        case DUP_OPCODE:   return "DUP"  ;
+        case HLT_OPCODE:   return "HLT"  ;
+        case JMP_OPCODE:   return "JMP"  ;
+        case JMPNE_OPCODE: return "JMPNE";
+        case JMPE_OPCODE:  return "JMPE" ;
+        case JMPL_OPCODE:  return "JMPL" ;
+        case JMPLE_OPCODE: return "JMPLE";
+        case JMPG_OPCODE:  return "JMPG" ;
+        case JMPGE_OPCODE: return "JMPGE";
         default: return nullptr;
     }
 }
@@ -237,12 +251,19 @@ byte getOperationArityByOpcode(byte opcode) {
         case MUL_OPCODE:
         case DIV_OPCODE:
         case SQRT_OPCODE:
+        case DUP_OPCODE:
         case HLT_OPCODE:
             return 0;
         case PUSH_OPCODE:
         case PUSHR_OPCODE:
         case POPR_OPCODE:
         case JMP_OPCODE:
+        case JMPNE_OPCODE:
+        case JMPE_OPCODE:
+        case JMPL_OPCODE:
+        case JMPLE_OPCODE:
+        case JMPG_OPCODE:
+        case JMPGE_OPCODE:
             return 1;
         default:
             return ERR_INVALID_OPERATION;
@@ -329,15 +350,15 @@ static bool toDouble(const char* string, double& value) {
  * Parses first possible double operand from the given string.
  * Note that the given string is also modified (pointer moved to the next token).
  * @param[in, out] line string to parse operand from
- * @return parsed operand, or FP_NAN if operand is invalid.
+ * @return parsed operand, or NAN if operand is invalid.
  */
 double parseOperand(char*& line) {
     assert(line != nullptr);
 
     const char* token = getNextToken(line);
 
-    double operand = FP_NAN;
-    if (!toDouble(token, operand)) operand = FP_NAN;
+    double operand = NAN;
+    if (!toDouble(token, operand)) operand = NAN;
     return operand;
 }
 
@@ -379,7 +400,13 @@ bool isLabel(const char* token) {
  * @return true, if the given operation is jump operation, false otherwise.
  */
 bool isJumpOperation(byte opcode) {
-    return opcode == JMP_OPCODE;
+    return opcode == JMP_OPCODE   ||
+           opcode == JMPNE_OPCODE ||
+           opcode == JMPE_OPCODE  ||
+           opcode == JMPL_OPCODE  ||
+           opcode == JMPLE_OPCODE ||
+           opcode == JMPG_OPCODE  ||
+           opcode == JMPGE_OPCODE;
 }
 
 /**

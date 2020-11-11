@@ -37,7 +37,7 @@ static byte processOperation(StackMachine* stackMachine, byte opcode) {
     Stack_double* stack = &stackMachine->stack;
 
     if (opcode == IN_OPCODE) {
-        double inputValue = FP_NAN;
+        double inputValue = NAN;
         printf("> ");
         scanf("%lg", &inputValue);
         push(stack, inputValue);
@@ -78,6 +78,10 @@ static byte processOperation(StackMachine* stackMachine, byte opcode) {
 
         double top = pop(stack);
         push(stack, sqrt(top));
+    } else if (opcode == DUP_OPCODE) {
+        if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
+
+        push(stack, top(stack));
     } else if (opcode == HLT_OPCODE) {
         /* Do nothing */
     } else {
@@ -113,25 +117,51 @@ static byte processOperation(StackMachine* stackMachine, byte opcode, double& op
 }
 
 /**
- * Processes the single operand operation with the given stack.
+ * Processes the jump operation with the given stack.
  * @param[in, out] stackMachine stack machine to use in operation
- * @param[in]      opcode  code of the operation to process
- * @param[in, out] operand operand to process
+ * @param[in]      opcode       code of the jump operation to process
+ * @param[in, out] jumpOffset   offset of the jump to process
  * @return given operation code, if operation processed successfully;
- *         ERR_INVALID_OPERATION, if operation code was invalid;
+ *         ERR_INVALID_OPERATION, if operation code or offset was invalid;
  *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
-static byte processOperation(StackMachine* stackMachine, byte opcode, int& operand) {
+static byte processJumpOperation(StackMachine* stackMachine, byte opcode, int& jumpOffset) {
     assert(stackMachine != nullptr);
+    assert(isJumpOperation(opcode));
 
+    Stack_double* stack = &stackMachine->stack;
+
+    double lhs = NAN, rhs = NAN;
+    if (opcode != JMP_OPCODE) {
+        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+        rhs = pop(stack); lhs = pop(stack);
+    }
     switch (opcode) {
+        case JMPE_OPCODE:
+            if (fabs(lhs - rhs) < COMPARE_EPS) break;
+            return opcode;
+        case JMPNE_OPCODE:
+            if (fabs(lhs - rhs) >= COMPARE_EPS) break;
+            return opcode;
+        case JMPL_OPCODE:
+            if (lhs < rhs) break;
+            return opcode;
+        case JMPLE_OPCODE:
+            if (lhs <= rhs) break;
+            return opcode;
+        case JMPG_OPCODE:
+            if (lhs > rhs) break;
+            return opcode;
+        case JMPGE_OPCODE:
+            if (lhs >= rhs) break;
+            return opcode;
         case JMP_OPCODE:
-            stackMachine->pc += operand;
-            if (stackMachine->pc < 0 || stackMachine->pc >= stackMachine->assemblySize) return ERR_INVALID_OPERATION;
             break;
         default:
             return ERR_INVALID_OPERATION;
     }
+    stackMachine->pc += jumpOffset;
+    if (stackMachine->pc < 0 || stackMachine->pc >= stackMachine->assemblySize) return ERR_INVALID_OPERATION;
     return opcode;
 }
 
@@ -161,7 +191,7 @@ static byte processNextOperation(StackMachine* stackMachine) {
                 int jumpOffset = asmReadJumpOffset(stackMachine);
                 // sizeof(offset) is subtracted, because pc is calculated ahead (with offset size)
                 jumpOffset -= (int)sizeof(jumpOffset);
-                return processOperation(stackMachine, opcode, jumpOffset);
+                return processJumpOperation(stackMachine, opcode, jumpOffset);
             } else {
                 double operand = asmReadOperand(stackMachine);
                 if (!std::isfinite(operand)) return ERR_INVALID_OPERATION;

@@ -104,25 +104,34 @@ Stack machine</h3>
 <div class="line">./stack-machine --help                          # To see help</div>
 <div class="line">./stack-machine --asm file.txt                  # To assemble file with code. Result is put in file.asm</div>
 <div class="line">./stack-machine --asm file1.txt -o file2.asm    # To assemble file with code. Result is put in file2.asm</div>
-<div class="line">./stack-machine --disasm file.asm               # To disassemble asm file. Result is put in file.txt</div>
+<div class="line">./stack-machine --disasm file.asm               # To disassemble asm file. Result is put in file__disassembly.txt</div>
 <div class="line">./stack-machine --disasm file1.asm -o file2.txt # To disassemble asm file. Result is put in file2.txt</div>
 <div class="line">./stack-machine --run file.asm                  # To run asm file</div>
 </div><!-- fragment --><p>Only one &ndash;asm, &ndash;disasm, &ndash;run option could be used at the time.</p>
 <h4><a class="anchor" id="autotoc_md5"></a>
 Available operations</h4>
-<p>File with code can contain next operations: </p><div class="fragment"><div class="line">IN        # Read double value from console and put it on stack</div>
-<div class="line">OUT       # Pop value from stack and write it in console</div>
-<div class="line">POP       # Pop value from stack</div>
-<div class="line">POP AX    # Pop value from stack and put it into register</div>
-<div class="line">PUSH 1.5  # Put the given value on top of the stack</div>
-<div class="line">PUSH AX   # Put the value from register on top of the stack</div>
-<div class="line">ADD       # Pop two values from stack and put the addition result on top of the stack </div>
-<div class="line">SUB       # Pop two values from stack and put the substraction result on top of the stack</div>
-<div class="line">MUL       # Pop two values from stack and put the multiplication result on top of the stack</div>
-<div class="line">DIV       # Pop two values from stack and put the division result on top of the stack</div>
-<div class="line">SQRT      # Pop one value from stack and put the square root on top of the stack</div>
-<div class="line">JMP LABEL # Unconditional jump to the given label</div>
-<div class="line">HLT       # Stop the program</div>
+<p>File with code can contain next operations: </p><div class="fragment"><div class="line">IN          # Read double value from console and put it on stack</div>
+<div class="line">OUT         # Pop value from stack and write it in console</div>
+<div class="line">POP         # Pop value from stack</div>
+<div class="line">POP AX      # Pop value from stack and put it into register</div>
+<div class="line">PUSH 1.5    # Put the given value on top of the stack</div>
+<div class="line">PUSH AX     # Put the value from register on top of the stack</div>
+<div class="line">ADD         # Pop two values from stack and put (lhs + rhs) on top of the stack</div>
+<div class="line">SUB         # Pop two values from stack and put (lhs - rhs) on top of the stack</div>
+<div class="line">MUL         # Pop two values from stack and put (lhs * rhs) on top of the stack</div>
+<div class="line">DIV         # Pop two values from stack and put (lhs / rhs) on top of the stack</div>
+<div class="line">SQRT        # Pop one value from stack and put the square root on top of the stack</div>
+<div class="line">DUP         # Duplicates value on top of the stack</div>
+<div class="line">JMP LABEL   # Unconditional jump to the given label</div>
+<div class="line">JMPE LABEL  # Pop two values from the stack and jump to the given label if (lhs == rhs) (compared using 1e-9 epsilon)</div>
+<div class="line">JMPNE LABEL # Pop two values from the stack and jump to the given label if (lhs != rhs) (compared using 1e-9 epsilon)</div>
+<div class="line">JMPL LABEL  # Pop two values from the stack and jump to the given label if (lhs &lt;  rhs)</div>
+<div class="line">JMPLE LABEL # Pop two values from the stack and jump to the given label if (lhs &lt;= rhs)</div>
+<div class="line">JMPG LABEL  # Pop two values from the stack and jump to the given label if (lhs &gt;  rhs)</div>
+<div class="line">JMPGE LABEL # Pop two values from the stack and jump to the given label if (lhs &gt;= rhs)</div>
+<div class="line">HLT         # Stop the program</div>
+<div class="line"> </div>
+<div class="line">* rhs - value on top of the stack, lhs - value under rhs</div>
 </div><!-- fragment --><p>Program should end with <code>HLT</code> command, otherwise it's behaviour is undefined. <br  />
 </p>
 <p>Each command should be on separate line. <br  />

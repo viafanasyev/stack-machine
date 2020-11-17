@@ -21,6 +21,127 @@ union intAsBytes {
     byte bytes[sizeof(int)];
 };
 
+AssemblyMachine::AssemblyMachine(const char* assemblyFileName) {
+    assert(assemblyFileName != nullptr);
+
+    FILE* assemblyFile = fopen(assemblyFileName, "rb");
+    if (assemblyFile == nullptr) return;
+
+    struct stat fileStat{};
+    fstat(fileno(assemblyFile), &fileStat);
+    if ((fstat(fileno(assemblyFile), &fileStat) < 0) || (fileStat.st_size == 0)) {
+        fclose(assemblyFile);
+        return;
+    }
+
+    assemblySize = fileStat.st_size;
+    void* dataPtr = mmap(nullptr, assemblySize, PROT_READ | PROT_WRITE, MAP_PRIVATE, fileno(assemblyFile), 0);
+    fclose(assemblyFile);
+    if (dataPtr == MAP_FAILED) {
+        assemblySize = -1;
+        return;
+    }
+    assembly = static_cast<unsigned char*>(dataPtr);
+
+    registers = (double*)calloc(REGISTERS_NUMBER, sizeof(double));
+    pc = 0;
+}
+
+AssemblyMachine::~AssemblyMachine() {
+    free(registers);
+    if (assembly != nullptr) {
+        munmap(assembly, assemblySize);
+    }
+}
+
+/**
+ * Reads the next operation from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read operation from
+ * @return operation code of the operation read.
+ */
+byte AssemblyMachine::getNextOperation() {
+    byte opCode = assembly[pc];
+    pc += sizeof(byte);
+    return opCode;
+}
+
+/**
+ * Reads the next operand from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read operand from
+ * @return operand read.
+ */
+double AssemblyMachine::getNextOperand() {
+    doubleAsBytes doubleBytes { 0 };
+    for (byte& b : doubleBytes.bytes) {
+        b = assembly[pc];
+        pc += sizeof(byte);
+    }
+    return doubleBytes.doubleValue;
+}
+
+/**
+ * Reads the next register from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine stack machine to read register from
+ * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
+ */
+byte AssemblyMachine::getNextRegister() {
+    byte reg = assembly[pc];
+    pc += sizeof(byte);
+    if (reg >= REGISTERS_NUMBER) return ERR_INVALID_REGISTER;
+    return reg;
+}
+
+/**
+ * Reads the next jump offset from assembly machine. Increases pc by the number of bytes read.
+ * @param[in, out] assemblyMachine assembly machine to read jump offset from
+ * @return jump offset.
+ */
+int AssemblyMachine::getNextJumpOffset() {
+    intAsBytes intBytes { 0 };
+    for (byte& b : intBytes.bytes) {
+        b = assembly[pc];
+        pc += sizeof(byte);
+    }
+    return intBytes.intValue;
+}
+
+/**
+ * Processes the next operation.
+ * @return processed operation code or error code, if operation was invalid.
+ */
+byte AssemblyMachine::processNextOperation() {
+    assert(assemblySize >= 0);
+    assert((pc >= 0) && (pc <= assemblySize));
+    assert(assembly != nullptr);
+    assert(registers != nullptr);
+
+    byte opcode = getNextOperation();
+
+    if (opcode == ERR_INVALID_OPERATION) return ERR_INVALID_OPERATION;
+
+    if (getOperationArityByOpcode(opcode) == 1) {
+        if ((opcode & IS_REG_OP_MASK) != 0) {
+            byte reg = getNextRegister();
+            if (reg == ERR_INVALID_REGISTER) return ERR_INVALID_REGISTER;
+            double& operand = registers[reg];
+            return processOperation(opcode, operand);
+        } else {
+            if (isJumpOperation(opcode)) {
+                int jumpOffset = getNextJumpOffset();
+                // sizeof(offset) is subtracted, because pc is calculated ahead (with offset size)
+                jumpOffset -= (int)sizeof(jumpOffset);
+                return processJumpOperation(opcode, jumpOffset);
+            } else {
+                double operand = getNextOperand();
+                if (!std::isfinite(operand)) return ERR_INVALID_OPERATION;
+                return processOperation(opcode, operand);
+            }
+        }
+    } else {
+        return processOperation(opcode);
+    }
+}
+
 LabelTable::LabelTable(const LabelTable& labelTable) {
     for (auto entry : labelTable.labels) {
         addLabel(entry.first, entry.second);
@@ -430,19 +551,6 @@ byte asmReadOperation(FILE* input, int& currentByteOffset) {
 }
 
 /**
- * Reads the next operation from assembly machine. Increases pc by the number of bytes read.
- * @param[in, out] assemblyMachine assembly machine to read operation from
- * @return operation code of the operation read.
- */
-byte asmReadOperation(AssemblyMachine* assemblyMachine) {
-    assert(assemblyMachine != nullptr);
-
-    byte opCode = assemblyMachine->assembly[assemblyMachine->pc];
-    assemblyMachine->pc += sizeof(byte);
-    return opCode;
-}
-
-/**
  * Reads the next double operand from assembly file. Increases offset by the number of bytes read.
  * @param[in]      input             assembly file
  * @param[in, out] currentByteOffset current offset in bytes
@@ -455,22 +563,6 @@ double asmReadOperand(FILE* input, int& currentByteOffset) {
     doubleAsBytes doubleBytes { 0 };
     for (byte& b : doubleBytes.bytes) {
         b = fgetc(input);
-    }
-    return doubleBytes.doubleValue;
-}
-
-/**
- * Reads the next operand from assembly machine. Increases pc by the number of bytes read.
- * @param[in, out] assemblyMachine assembly machine to read operand from
- * @return operand read.
- */
-double asmReadOperand(AssemblyMachine* assemblyMachine) {
-    assert(assemblyMachine != nullptr);
-
-    doubleAsBytes doubleBytes { 0 };
-    for (byte& b : doubleBytes.bytes) {
-        b = assemblyMachine->assembly[assemblyMachine->pc];
-        assemblyMachine->pc += sizeof(byte);
     }
     return doubleBytes.doubleValue;
 }
@@ -491,20 +583,6 @@ byte asmReadRegister(FILE* input, int& currentByteOffset) {
 }
 
 /**
- * Reads the next register from assembly machine. Increases pc by the number of bytes read.
- * @param[in, out] assemblyMachine stack machine to read register from
- * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
- */
-byte asmReadRegister(AssemblyMachine* assemblyMachine) {
-    assert(assemblyMachine != nullptr);
-
-    byte reg = assemblyMachine->assembly[assemblyMachine->pc];
-    assemblyMachine->pc += sizeof(byte);
-    if (reg >= REGISTERS_NUMBER) return ERR_INVALID_REGISTER;
-    return reg;
-}
-
-/**
  * Reads the next jump offset from assembly file. Increases offset by the number of bytes read.
  * @param[in]      input             assembly file
  * @param[in, out] currentByteOffset current offset in bytes
@@ -517,22 +595,6 @@ int asmReadJumpOffset(FILE* input, int& currentByteOffset) {
     intAsBytes intBytes { 0 };
     for (byte& b : intBytes.bytes) {
         b = fgetc(input);
-    }
-    return intBytes.intValue;
-}
-
-/**
- * Reads the next jump offset from assembly machine. Increases pc by the number of bytes read.
- * @param[in, out] assemblyMachine assembly machine to read jump offset from
- * @return jump offset.
- */
-int asmReadJumpOffset(AssemblyMachine* assemblyMachine) {
-    assert(assemblyMachine != nullptr);
-
-    intAsBytes intBytes { 0 };
-    for (byte& b : intBytes.bytes) {
-        b = assemblyMachine->assembly[assemblyMachine->pc];
-        assemblyMachine->pc += sizeof(byte);
     }
     return intBytes.intValue;
 }

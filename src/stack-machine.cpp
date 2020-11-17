@@ -7,91 +7,85 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
-#include <sys/stat.h>
-
-#define STACK_SECURITY_LEVEL 3
-#define STACK_TYPE double
-#include "immortal-stack/stack.h"
-#undef STACK_TYPE
-#define STACK_TYPE int
-#include "immortal-stack/stack.h"
-#undef STACK_TYPE
 
 #include "stack-machine.h"
-#include "stack-machine-utils.h"
 
 using byte = unsigned char;
 
-struct StackMachine : AssemblyMachine {
-    Stack_double stack;
-    Stack_int callStack;
-};
+StackMachine::StackMachine(const char* assemblyFileName) : AssemblyMachine(assemblyFileName) {
+    constructStack(&stack);
+    constructStack(&callStack);
+}
+
+StackMachine::~StackMachine() {
+    destructStack(&stack);
+    destructStack(&callStack);
+}
 
 /**
- * Processes the no-operand operation with the given stack.
- * @param[in, out] stackMachine stack machine to use in operation
- * @param[in]      opcode code of the operation to process
+ * Processes the no-operand operation.
+ * @param[in] opcode code of the operation to process
  * @return given operation code, if operation processed successfully;
  *         ERR_INVALID_OPERATION, if operation code was invalid;
  *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
-static byte processOperation(StackMachine* stackMachine, byte opcode) {
-    assert(stackMachine != nullptr);
-
-    Stack_double* stack = &stackMachine->stack;
-    Stack_int* callStack = &stackMachine->callStack;
+byte StackMachine::processOperation(byte opcode) {
+    assert(assemblySize >= 0);
+    assert((pc >= 0) && (pc <= assemblySize));
+    assert(assembly != nullptr);
+    assert(registers != nullptr);
 
     if (opcode == IN_OPCODE) {
         double inputValue = NAN;
         printf("> ");
         scanf("%lg", &inputValue);
-        push(stack, inputValue);
+        push(&stack, inputValue);
     } else if (opcode == OUT_OPCODE) {
-        if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&stack) < 1) return ERR_STACK_UNDERFLOW;
 
-        printf("%lg\n", pop(stack));
+        printf("%lg\n", pop(&stack));
     } else if (opcode == POP_OPCODE) {
-        if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&stack) < 1) return ERR_STACK_UNDERFLOW;
 
-        pop(stack);
+        pop(&stack);
     } else if (opcode == ADD_OPCODE) {
-        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&stack) < 2) return ERR_STACK_UNDERFLOW;
 
-        double rhs = pop(stack);
-        double lhs = pop(stack);
-        push(stack, lhs + rhs);
+        double rhs = pop(&stack);
+        double lhs = pop(&stack);
+        push(&stack, lhs + rhs);
     } else if (opcode == SUB_OPCODE) {
-        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&stack) < 2) return ERR_STACK_UNDERFLOW;
 
-        double rhs = pop(stack);
-        double lhs = pop(stack);
-        push(stack, lhs - rhs);
+        double rhs = pop(&stack);
+        double lhs = pop(&stack);
+        push(&stack, lhs - rhs);
     } else if (opcode == MUL_OPCODE) {
-        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&stack) < 2) return ERR_STACK_UNDERFLOW;
 
-        double rhs = pop(stack);
-        double lhs = pop(stack);
-        push(stack, lhs * rhs);
+        double rhs = pop(&stack);
+        double lhs = pop(&stack);
+        push(&stack, lhs * rhs);
     } else if (opcode == DIV_OPCODE) {
-        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&stack) < 2) return ERR_STACK_UNDERFLOW;
 
-        double rhs = pop(stack);
-        double lhs = pop(stack);
-        push(stack, lhs / rhs);
+        double rhs = pop(&stack);
+        double lhs = pop(&stack);
+        push(&stack, lhs / rhs);
     } else if (opcode == SQRT_OPCODE) {
-        if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&stack) < 1) return ERR_STACK_UNDERFLOW;
 
-        double top = pop(stack);
-        push(stack, sqrt(top));
+        double top = pop(&stack);
+        push(&stack, sqrt(top));
     } else if (opcode == DUP_OPCODE) {
-        if (getStackSize(stack) < 1) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&stack) < 1) return ERR_STACK_UNDERFLOW;
 
-        push(stack, top(stack));
+        push(&stack, top(&stack));
     } else if (opcode == RET_OPCODE) {
-        if (getStackSize(callStack) < 1) return ERR_STACK_UNDERFLOW;
+        if (getStackSize(&callStack) < 1) return ERR_STACK_UNDERFLOW;
 
-        int returnAddress = pop(callStack);
-        stackMachine->pc = returnAddress;
+        int returnAddress = pop(&callStack);
+        pc = returnAddress;
     } else if (opcode == HLT_OPCODE) {
         /* Do nothing */
     } else {
@@ -101,24 +95,26 @@ static byte processOperation(StackMachine* stackMachine, byte opcode) {
 }
 
 /**
- * Processes the single operand operation with the given stack.
- * @param[in, out] stackMachine stack machine to use in operation
+ * Processes the single operand operation.
  * @param[in]      opcode  code of the operation to process
  * @param[in, out] operand operand to process
  * @return given operation code, if operation processed successfully;
  *         ERR_INVALID_OPERATION, if operation code was invalid;
  *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
-static byte processOperation(StackMachine* stackMachine, byte opcode, double& operand) {
-    assert(stackMachine != nullptr);
+byte StackMachine::processOperation(byte opcode, double& operand) {
+    assert(assemblySize >= 0);
+    assert((pc >= 0) && (pc <= assemblySize));
+    assert(assembly != nullptr);
+    assert(registers != nullptr);
 
     switch (opcode) {
         case PUSH_OPCODE:
         case PUSHR_OPCODE:
-            push(&stackMachine->stack, operand);
+            push(&stack, operand);
             break;
         case POPR_OPCODE:
-            operand = pop(&stackMachine->stack);
+            operand = pop(&stack);
             break;
         default:
             return ERR_INVALID_OPERATION;
@@ -127,25 +123,24 @@ static byte processOperation(StackMachine* stackMachine, byte opcode, double& op
 }
 
 /**
- * Processes the jump operation with the given stack.
- * @param[in, out] stackMachine stack machine to use in operation
- * @param[in]      opcode       code of the jump operation to process
- * @param[in]      jumpOffset   offset of the jump to process
+ * Processes the jump operation.
+ * @param[in] opcode     code of the jump operation to process
+ * @param[in] jumpOffset offset of the jump to process
  * @return given operation code, if operation processed successfully;
  *         ERR_INVALID_OPERATION, if operation code or offset was invalid;
  *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
  */
-static byte processJumpOperation(StackMachine* stackMachine, byte opcode, int jumpOffset) {
-    assert(stackMachine != nullptr);
+byte StackMachine::processJumpOperation(byte opcode, int jumpOffset) {
+    assert(assemblySize >= 0);
+    assert((pc >= 0) && (pc <= assemblySize));
+    assert(assembly != nullptr);
+    assert(registers != nullptr);
     assert(isJumpOperation(opcode));
-
-    Stack_double* stack = &stackMachine->stack;
-    Stack_int* callStack = &stackMachine->callStack;
 
     double lhs = NAN, rhs = NAN;
     if (opcode != JMP_OPCODE && opcode != CALL_OPCODE) {
-        if (getStackSize(stack) < 2) return ERR_STACK_UNDERFLOW;
-        rhs = pop(stack); lhs = pop(stack);
+        if (getStackSize(&stack) < 2) return ERR_STACK_UNDERFLOW;
+        rhs = pop(&stack); lhs = pop(&stack);
     }
     switch (opcode) {
         case JMPE_OPCODE:
@@ -167,54 +162,16 @@ static byte processJumpOperation(StackMachine* stackMachine, byte opcode, int ju
             if (lhs >= rhs) break;
             return opcode;
         case CALL_OPCODE:
-            push(callStack, stackMachine->pc);
+            push(&callStack, pc);
             break;
         case JMP_OPCODE:
             break;
         default:
             return ERR_INVALID_OPERATION;
     }
-    stackMachine->pc += jumpOffset;
-    if (stackMachine->pc < 0 || stackMachine->pc >= stackMachine->assemblySize) return ERR_INVALID_OPERATION;
+    pc += jumpOffset;
+    if (pc < 0 || pc >= assemblySize) return ERR_INVALID_OPERATION;
     return opcode;
-}
-
-/**
- * Processes the next operation in stack machine.
- * @param[in, out] stackMachine stack machine to use in operation
- * @return processed operation code;
- *         ERR_INVALID_OPERATION if operation was invalid;
- *         ERR_INVALID_REGISTER if register was invalid;
- *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
- */
-static byte processNextOperation(StackMachine* stackMachine) {
-    assert(stackMachine != nullptr);
-
-    byte opcode = asmReadOperation(stackMachine);
-
-    if (opcode == ERR_INVALID_OPERATION) return ERR_INVALID_OPERATION;
-
-    if (getOperationArityByOpcode(opcode) == 1) {
-        if ((opcode & IS_REG_OP_MASK) != 0) {
-            byte reg = asmReadRegister(stackMachine);
-            if (reg == ERR_INVALID_REGISTER) return ERR_INVALID_REGISTER;
-            double& operand = stackMachine->registers[reg];
-            return processOperation(stackMachine, opcode, operand);
-        } else {
-            if (isJumpOperation(opcode)) {
-                int jumpOffset = asmReadJumpOffset(stackMachine);
-                // sizeof(offset) is subtracted, because pc is calculated ahead (with offset size)
-                jumpOffset -= (int)sizeof(jumpOffset);
-                return processJumpOperation(stackMachine, opcode, jumpOffset);
-            } else {
-                double operand = asmReadOperand(stackMachine);
-                if (!std::isfinite(operand)) return ERR_INVALID_OPERATION;
-                return processOperation(stackMachine, opcode, operand);
-            }
-        }
-    } else {
-        return processOperation(stackMachine, opcode);
-    }
 }
 
 /**
@@ -418,32 +375,13 @@ int disassemble(const char* inputFileName, const char* outputFileName) {
 int run(const char* inputFileName) {
     assert(inputFileName != nullptr);
 
-    FILE* input = fopen(inputFileName, "rb");
-    if (input == nullptr) return ERR_INVALID_FILE;
-
-    struct stat fileStat{};
-    fstat(fileno(input), &fileStat);
-
-    StackMachine stackMachine;
-    constructStack(&stackMachine.stack);
-    constructStack(&stackMachine.callStack);
-    stackMachine.registers = (double*)calloc(REGISTERS_NUMBER, sizeof(double));
-    stackMachine.assemblySize = fileStat.st_size;
-    stackMachine.assembly = (byte*)calloc(stackMachine.assemblySize, sizeof(byte));
-    for (int i = 0; i < stackMachine.assemblySize; ++i) {
-        stackMachine.assembly[i] = fgetc(input);
-    }
-    stackMachine.pc = 0;
+    StackMachine stackMachine(inputFileName);
+    if (stackMachine.getAssemblySize() < 0) return ERR_INVALID_FILE;
 
     byte opcode = 0;
     do {
-        if (isError(opcode = processNextOperation(&stackMachine))) break;
-    } while (opcode != HLT_OPCODE);
+        opcode = stackMachine.processNextOperation();
+    } while (opcode != HLT_OPCODE && !isError(opcode));
 
-    free(stackMachine.assembly);
-    free(stackMachine.registers);
-    destructStack(&stackMachine.callStack);
-    destructStack(&stackMachine.stack);
-    fclose(input);
     return opcode;
 }

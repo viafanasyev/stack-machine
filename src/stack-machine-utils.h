@@ -7,7 +7,11 @@
 
 #include <cstdio>
 #include <cstring>
+#include <fcntl.h>
 #include <map>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <vector>
 
 #define IN_OPCODE    0b00000001u
@@ -48,11 +52,82 @@
 
 #define COMPARE_EPS 1e-9
 
-struct AssemblyMachine {
+class AssemblyMachine {
+
+protected:
     double* registers = nullptr;
     int pc = -1;
     unsigned char* assembly = nullptr;
     int assemblySize = -1;
+
+public:
+    explicit AssemblyMachine(const char* assemblyFileName);
+
+    ~AssemblyMachine();
+
+    AssemblyMachine(AssemblyMachine& assemblyMachine) = delete;
+    AssemblyMachine &operator=(const AssemblyMachine&) = delete;
+
+    int getAssemblySize() const {
+        return assemblySize;
+    }
+
+    /**
+     * Reads the next operation from assembly machine. Increases pc by the number of bytes read.
+     * @param[in, out] assemblyMachine assembly machine to read operation from
+     * @return operation code of the operation read.
+     */
+    unsigned char getNextOperation();
+
+    /**
+     * Reads the next operand from assembly machine. Increases pc by the number of bytes read.
+     * @param[in, out] assemblyMachine assembly machine to read operand from
+     * @return operand read.
+     */
+    double getNextOperand();
+
+    /**
+     * Reads the next register from assembly machine. Increases pc by the number of bytes read.
+     * @param[in, out] assemblyMachine stack machine to read register from
+     * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
+     */
+    unsigned char getNextRegister();
+
+    /**
+     * Reads the next jump offset from assembly machine. Increases pc by the number of bytes read.
+     * @param[in, out] assemblyMachine assembly machine to read jump offset from
+     * @return jump offset.
+     */
+    int getNextJumpOffset();
+
+    /**
+     * Processes the no-operand operation.
+     * @param[in] opcode code of the operation to process
+     * @return given operation code or error code, if operation was invalid.
+     */
+    virtual unsigned char processOperation(unsigned char opcode) = 0;
+
+    /**
+     * Processes the single operand operation.
+     * @param[in]      opcode  code of the operation to process
+     * @param[in, out] operand operand to process
+     * @return given operation code or error code, if operation was invalid.
+     */
+    virtual unsigned char processOperation(unsigned char opcode, double& operand) = 0;
+
+    /**
+     * Processes the jump operation.
+     * @param[in] opcode     code of the jump operation to process
+     * @param[in] jumpOffset offset of the jump to process
+     * @return given operation code or error code, if operation was invalid.
+     */
+    virtual unsigned char processJumpOperation(unsigned char opcode, int jumpOffset) = 0;
+
+    /**
+     * Processes the next operation.
+     * @return processed operation code or error code, if operation was invalid.
+     */
+    unsigned char processNextOperation();
 };
 
 /**
@@ -239,26 +314,12 @@ bool isJumpOperation(unsigned char opcode);
 unsigned char asmReadOperation(FILE* input, int& currentByteOffset);
 
 /**
- * Reads the next operation from assembly machine. Increases pc by the number of bytes read.
- * @param[in, out] assemblyMachine assembly machine to read operation from
- * @return operation code of the operation read.
- */
-unsigned char asmReadOperation(AssemblyMachine* assemblyMachine);
-
-/**
  * Reads the next double operand from assembly file. Increases offset by the number of bytes read.
  * @param[in]      input             assembly file
  * @param[in, out] currentByteOffset current offset in bytes
  * @return operand read.
  */
 double asmReadOperand(FILE* input, int& currentByteOffset);
-
-/**
- * Reads the next operand from assembly machine. Increases pc by the number of bytes read.
- * @param[in, out] assemblyMachine assembly machine to read operand from
- * @return operand read.
- */
-double asmReadOperand(AssemblyMachine* assemblyMachine);
 
 /**
  * Reads the next register from assembly file. Increases offset by the number of bytes read.
@@ -269,26 +330,12 @@ double asmReadOperand(AssemblyMachine* assemblyMachine);
 unsigned char asmReadRegister(FILE* input, int& currentByteOffset);
 
 /**
- * Reads the next register from assembly machine. Increases pc by the number of bytes read.
- * @param[in, out] assemblyMachine stack machine to read register from
- * @return register number read, or ERR_INVALID_REGISTER, if register number is invalid.
- */
-unsigned char asmReadRegister(AssemblyMachine* assemblyMachine);
-
-/**
  * Reads the next jump offset from assembly file. Increases offset by the number of bytes read.
  * @param[in]      input             assembly file
  * @param[in, out] currentByteOffset current offset in bytes
  * @return jump offset.
  */
 int asmReadJumpOffset(FILE* input, int& currentByteOffset);
-
-/**
- * Reads the next jump offset from assembly machine. Increases pc by the number of bytes read.
- * @param[in, out] assemblyMachine assembly machine to read jump offset from
- * @return jump offset.
- */
-int asmReadJumpOffset(AssemblyMachine* assemblyMachine);
 
 /**
  * Removes leading and trailing space characters (whitespaces, '\\n', '\\t', etc) from the given C-string. Note that the given string is also changed.

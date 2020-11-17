@@ -121,7 +121,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if assembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; -1, if any other error occurred (such as invalid input file).</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if assembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_INVALID_FILE, if input file is invalid.</dd></dl>
 <p>Assembles the given source code file into the assembly file. Assembly is performed in two runs: first run resolves labels, second one generates resulting .asm file. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">inputFileName</td><td>source code file name </td></tr>
@@ -129,7 +129,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if assembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_INVALID_LABEL, if invalid label was met; -1, if any other error occurred (such as invalid input file). </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if assembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_INVALID_LABEL, if invalid label was met; ERR_INVALID_FILE, if input file is invalid. </dd></dl>
 
 </div>
 </div>
@@ -165,7 +165,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if disassembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; -1, if any other error occurred (such as invalid input file).</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if disassembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_INVALID_FILE, if input file is invalid.</dd></dl>
 <p>Disassembles the given assembly file into the possible source code file. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">inputFileName</td><td>assembly file name </td></tr>
@@ -173,7 +173,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if disassembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_INVALID_LABEL, if invalid offset was met; -1, if any other error occurred (such as invalid input file). </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if disassembly finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_INVALID_LABEL, if invalid offset was met; ERR_INVALID_FILE, if input file is invalid. </dd></dl>
 
 </div>
 </div>
@@ -198,7 +198,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if program finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack; -1, if any other error occurred (such as invalid input file). </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if program finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack; ERR_INVALID_FILE, if input file is invalid. </dd></dl>
 
 </div>
 </div>

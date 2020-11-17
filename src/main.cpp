@@ -149,6 +149,8 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "Stack underflow\n");
     } else if (exitCode == ERR_INVALID_LABEL) {
         fprintf(stderr, "Invalid label\n");
+    } else if (exitCode == ERR_INVALID_FILE) {
+        fprintf(stderr, "Invalid file name or path\n");
     }
 
     return exitCode;

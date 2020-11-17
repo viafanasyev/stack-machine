@@ -324,14 +324,14 @@ static byte resolveLabels(FILE* input, LabelTable& labelTable) {
  *         ERR_INVALID_OPERATION, if invalid operation was met;
  *         ERR_INVALID_REGISTER, if invalid register was met;
  *         ERR_INVALID_LABEL, if invalid label was met;
- *         -1, if any other error occurred (such as invalid input file).
+ *         ERR_INVALID_FILE, if input file is invalid.
  */
 int assemble(const char* inputFileName, const char* outputFileName) {
     assert(inputFileName != nullptr);
     assert(outputFileName != nullptr);
 
     FILE* input  = fopen(inputFileName,  "r");
-    if (input == nullptr) return -1;
+    if (input == nullptr) return ERR_INVALID_FILE;
     FILE* output = fopen(outputFileName, "wb");
 
     LabelTable labelTable;
@@ -354,14 +354,14 @@ int assemble(const char* inputFileName, const char* outputFileName) {
  *         ERR_INVALID_OPERATION, if invalid operation was met;
  *         ERR_INVALID_REGISTER, if invalid register was met;
  *         ERR_INVALID_LABEL, if invalid offset was met;
- *         -1, if any other error occurred (such as invalid input file).
+ *         ERR_INVALID_FILE, if input file is invalid.
  */
 int disassemble(const char* inputFileName, const char* outputFileName) {
     assert(inputFileName != nullptr);
     assert(outputFileName != nullptr);
 
     FILE* input  = fopen(inputFileName,  "rb");
-    if (input == nullptr) return -1;
+    if (input == nullptr) return ERR_INVALID_FILE;
     FILE* output = fopen(outputFileName, "w");
 
     byte statusCode = 0;
@@ -413,13 +413,13 @@ int disassemble(const char* inputFileName, const char* outputFileName) {
  *         ERR_INVALID_OPERATION, if invalid operation was met;
  *         ERR_INVALID_REGISTER, if invalid register was met;
  *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack;
- *         -1, if any other error occurred (such as invalid input file).
+ *         ERR_INVALID_FILE, if input file is invalid.
  */
 int run(const char* inputFileName) {
     assert(inputFileName != nullptr);
 
     FILE* input = fopen(inputFileName, "rb");
-    if (input == nullptr) return -1;
+    if (input == nullptr) return ERR_INVALID_FILE;
 
     struct stat fileStat{};
     fstat(fileno(input), &fileStat);

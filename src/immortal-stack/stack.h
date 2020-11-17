@@ -87,13 +87,13 @@ static inline bool isStackOk(TYPED_STACK(STACK_TYPE)* stack);
  * @param[in, out] thiz       pointer to the stack this operation should be performed on
  * @param[in] initialCapacity initial size of the data array
  */
-void constructStack(TYPED_STACK(STACK_TYPE)* thiz, size_t initialCapacity = 0);
+static inline void constructStack(TYPED_STACK(STACK_TYPE)* thiz, size_t initialCapacity = 0);
 
 /**
  * Destructs the given stack. Frees the dynamic memory and resets all struct members to initial state.
  * @param[in, out] thiz pointer to the stack this operation should be performed on
  */
-void destructStack(TYPED_STACK(STACK_TYPE)* thiz);
+static inline void destructStack(TYPED_STACK(STACK_TYPE)* thiz);
 
 /**
  * Multiplier that is used in enlarge function.
@@ -106,42 +106,42 @@ void destructStack(TYPED_STACK(STACK_TYPE)* thiz);
  * Otherwise, capacity is multiplied by STACK_ENLARGE_MULTIPLIER.
  * @param[in, out] thiz pointer to the stack this operation should be performed on
  */
-void enlarge(TYPED_STACK(STACK_TYPE)* thiz);
+static inline void enlarge(TYPED_STACK(STACK_TYPE)* thiz);
 
 /**
  * Pushes the given element on top of the stack.
  * @param[in, out] thiz pointer to the stack this operation should be performed on
  * @param[in] x         value to put on top of the stack
  */
-void push(TYPED_STACK(STACK_TYPE)* thiz, STACK_TYPE x);
+static inline void push(TYPED_STACK(STACK_TYPE)* thiz, STACK_TYPE x);
 
 /**
  * Removes value from top of the stack.
  * @param[in, out] thiz pointer to the stack this operation should be performed on
  * @return value that was on top of the stack.
  */
-STACK_TYPE pop(TYPED_STACK(STACK_TYPE)* thiz);
+static inline STACK_TYPE pop(TYPED_STACK(STACK_TYPE)* thiz);
 
 /**
  * Gives value from top of the stack without removing it (unlike pop function).
  * @param[in] thiz pointer to the stack this operation should be performed on
  * @return value that is located on top of the stack
  */
-STACK_TYPE top(TYPED_STACK(STACK_TYPE)* thiz);
+static inline STACK_TYPE top(TYPED_STACK(STACK_TYPE)* thiz);
 
 /**
  * Gives the number of elements in the given stack.
  * @param[in] thiz pointer to the stack this operation should be performed on
  * @return size of the stack.
  */
-ssize_t getStackSize(TYPED_STACK(STACK_TYPE)* thiz);
+static inline ssize_t getStackSize(TYPED_STACK(STACK_TYPE)* thiz);
 
 /**
  * Gives the actual size of the stack (size of the data holder array).
  * @param[in] thiz pointer to the stack this operation should be performed on
  * @return capacity of the stack.
  */
-ssize_t getStackCapacity(TYPED_STACK(STACK_TYPE)* thiz);
+static inline ssize_t getStackCapacity(TYPED_STACK(STACK_TYPE)* thiz);
 
 /**
  * Gives the pointer to the actual dynamic array of contained data:
@@ -445,7 +445,7 @@ STACK_TYPE pop(TYPED_STACK(STACK_TYPE)* const thiz) {
  * @param[in] thiz pointer to the stack this operation should be performed on
  * @return value that is located on top of the stack
  */
-STACK_TYPE top(TYPED_STACK(STACK_TYPE)* const thiz) {
+inline STACK_TYPE top(TYPED_STACK(STACK_TYPE)* const thiz) {
     CHECK_STACK_OK(thiz);
     CHECK_STACK_CONDITION(thiz, thiz->_size > 0);
 

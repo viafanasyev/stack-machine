@@ -256,7 +256,8 @@ static bool isError(byte opcode) {
     return opcode == ERR_INVALID_OPERATION ||
            opcode == ERR_INVALID_REGISTER  ||
            opcode == ERR_STACK_UNDERFLOW   ||
-           opcode == ERR_INVALID_LABEL;
+           opcode == ERR_INVALID_LABEL     ||
+           opcode == ERR_INVALID_FILE;
 }
 
 /**

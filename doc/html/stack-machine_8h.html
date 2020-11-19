@@ -66,6 +66,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">stack-machine.h File Reference</div>  </div>
@@ -74,9 +76,31 @@ $(function() {
 
 <p>Declaration of stack machine functions.  
 <a href="#details">More...</a></p>
-
+<div class="textblock"><code>#include &lt;unistd.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="stack_8h_source.html">immortal-stack/stack.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="stack-machine-utils_8h_source.html">stack-machine-utils.h</a>&quot;</code><br />
+</div>
 <p><a href="stack-machine_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_r_a_m.html">RAM</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_stack_machine.html">StackMachine</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:aa7e1a819404aeda9aae01711d3ddc314"><td class="memItemLeft" align="right" valign="top"><a id="aa7e1a819404aeda9aae01711d3ddc314"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>STACK_SECURITY_LEVEL</b>&#160;&#160;&#160;3</td></tr>
+<tr class="separator:aa7e1a819404aeda9aae01711d3ddc314"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac3a9cf7da0ffc027fb96855734bd774"><td class="memItemLeft" align="right" valign="top"><a id="aac3a9cf7da0ffc027fb96855734bd774"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>STACK_TYPE</b>&#160;&#160;&#160;double</td></tr>
+<tr class="separator:aac3a9cf7da0ffc027fb96855734bd774"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac3a9cf7da0ffc027fb96855734bd774"><td class="memItemLeft" align="right" valign="top"><a id="aac3a9cf7da0ffc027fb96855734bd774"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>STACK_TYPE</b>&#160;&#160;&#160;int</td></tr>
+<tr class="separator:aac3a9cf7da0ffc027fb96855734bd774"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a861c5f56b271c645b458545197462954"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine_8h.html#a861c5f56b271c645b458545197462954">assemble</a> (const char *inputFileName, const char *outputFileName)</td></tr>
@@ -198,7 +222,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0, if program finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack; ERR_INVALID_FILE, if input file is invalid. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>0, if program finished successfully; ERR_INVALID_OPERATION, if invalid operation was met; ERR_INVALID_REGISTER, if invalid register was met; ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack; ERR_INVALID_FILE, if input file is invalid; ERR_INVALID_RAM_ADDRESS, if address operand exceeds <a class="el" href="class_r_a_m.html">RAM</a> size. </dd></dl>
 
 </div>
 </div>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['stackmachine_85',['StackMachine',['../struct_stack_machine.html',1,'']]]
+  ['labeltable_99',['LabelTable',['../class_label_table.html',1,'']]]
 ];

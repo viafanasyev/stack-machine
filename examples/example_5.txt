@@ -1,0 +1,48 @@
+    CALL INIT
+LOOP_START:
+    IN
+    POP AX
+    PUSH AX
+    PUSH 0
+    JMPL LOOP_END
+    PUSH AX
+    PUSH 5
+    JMPGE LOOP_END
+    IN
+    POP BX
+    CALL SET
+    CALL PRINT
+    JMP LOOP_START
+LOOP_END:
+    HLT
+
+SET:
+    PUSH BX
+    POP [AX]
+    RET
+
+INIT:
+    PUSH 0
+    POP [0]
+    PUSH 0
+    POP [1]
+    PUSH 0
+    POP [2]
+    PUSH 0
+    POP [3]
+    PUSH 0
+    POP [4]
+    RET
+
+PRINT:
+    PUSH [0]
+    OUT
+    PUSH [1]
+    OUT
+    PUSH [2]
+    OUT
+    PUSH [3]
+    OUT
+    PUSH [4]
+    OUT
+    RET

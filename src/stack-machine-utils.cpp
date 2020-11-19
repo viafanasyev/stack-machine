@@ -206,24 +206,32 @@ void DisassemblyBuffer::writeOperation(const char* operation) {
 
 /**
  * Writes double operand into the disassembly buffer.
- * @param[in] operand operand to write
+ * @param[in] operand        operand to write
+ * @param[in] isRamOperation shows if an operand is a RAM address
  */
-void DisassemblyBuffer::writeOperand(double operand) {
+void DisassemblyBuffer::writeOperand(double operand, bool isRamOperation) {
     char line[MAX_LINE_LENGTH];
-    sprintf(line, " %lg", operand);
+    if (isRamOperation) {
+        sprintf(line, " [%lg]", operand);
+    } else {
+        sprintf(line, " %lg", operand);
+    }
     strcat(lines.back().first, line);
     lines.back().second += sizeof(double);
 }
 
 /**
  * Writes register name into the disassembly buffer.
- * @param[in] regName register name to write
+ * @param[in] regName        register name to write
+ * @param[in] isRamOperation shows if an operand is a RAM address
  */
-void DisassemblyBuffer::writeRegister(const char* regName) {
+void DisassemblyBuffer::writeRegister(const char* regName, bool isRamOperation) {
     assert(regName != nullptr);
 
     strcat(lines.back().first, " ");
+    if (isRamOperation) strcat(lines.back().first, "[");
     strcat(lines.back().first, regName);
+    if (isRamOperation) strcat(lines.back().first, "]");
     lines.back().second += sizeof(byte);
 }
 
@@ -339,8 +347,8 @@ const char* getOperationNameByOpcode(byte opcode) {
     switch (opcode) {
         case IN_OPCODE:    return "IN"   ;
         case OUT_OPCODE:   return "OUT"  ;
-        case POP_OPCODE:   case POPR_OPCODE:  return "POP" ;
-        case PUSH_OPCODE:  case PUSHR_OPCODE: return "PUSH";
+        case POP_OPCODE:   case POPR_OPCODE:  case POPM_OPCODE:  case POPRM_OPCODE:  return "POP" ;
+        case PUSH_OPCODE:  case PUSHR_OPCODE: case PUSHM_OPCODE: case PUSHRM_OPCODE: return "PUSH";
         case ADD_OPCODE:   return "ADD"  ;
         case SUB_OPCODE:   return "SUB"  ;
         case MUL_OPCODE:   return "MUL"  ;
@@ -382,7 +390,11 @@ byte getOperationArityByOpcode(byte opcode) {
             return 0;
         case PUSH_OPCODE:
         case PUSHR_OPCODE:
+        case PUSHM_OPCODE:
+        case PUSHRM_OPCODE:
         case POPR_OPCODE:
+        case POPM_OPCODE:
+        case POPRM_OPCODE:
         case JMP_OPCODE:
         case JMPNE_OPCODE:
         case JMPE_OPCODE:
@@ -519,6 +531,26 @@ bool isLabel(const char* token) {
     } else {
         return false;
     }
+}
+
+/**
+ * Checks if the given token is a RAM access token (bounded with '[' and ']').
+ * If so, converts token to the token between braces.
+ * @param[in, out] token token to check
+ * @return true, if the given token is a RAM access token, false otherwise.
+ */
+bool asRamAccess(char*& token) {
+    char* start = token;
+    char* end = token + strlen(token) - 1;
+    while (start < end && isspace(*start)) ++start;
+    while (end > start && isspace(*end)) --end;
+
+    if (*start != '[') return false;
+    if (*end != ']') return false;
+
+    token = start + 1;
+    *end = '\0';
+    return true;
 }
 
 /**

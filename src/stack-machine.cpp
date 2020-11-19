@@ -12,9 +12,20 @@
 
 using byte = unsigned char;
 
+byte RAM::getAt(int pos) const {
+    usleep(DELAY_MICROSECONDS);
+    return memory[pos];
+}
+
+void RAM::setAt(int pos, byte value) {
+    usleep(DELAY_MICROSECONDS);
+    memory[pos] = value;
+}
+
 StackMachine::StackMachine(const char* assemblyFileName) : AssemblyMachine(assemblyFileName) {
     constructStack(&stack);
     constructStack(&callStack);
+    ram = RAM();
 }
 
 StackMachine::~StackMachine() {
@@ -100,7 +111,8 @@ byte StackMachine::processOperation(byte opcode) {
  * @param[in, out] operand operand to process
  * @return given operation code, if operation processed successfully;
  *         ERR_INVALID_OPERATION, if operation code was invalid;
- *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack.
+ *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack;
+ *         ERR_INVALID_RAM_ADDRESS, if address operand exceeds RAM size.
  */
 byte StackMachine::processOperation(byte opcode, double& operand) {
     assert(assemblySize >= 0);
@@ -113,8 +125,18 @@ byte StackMachine::processOperation(byte opcode, double& operand) {
         case PUSHR_OPCODE:
             push(&stack, operand);
             break;
+        case PUSHM_OPCODE:
+        case PUSHRM_OPCODE:
+            if ((operand < 0) || ((int)operand >= ram.SIZE)) return ERR_INVALID_RAM_ADDRESS;
+            push(&stack, ram.getAt((int)operand));
+            break;
         case POPR_OPCODE:
             operand = pop(&stack);
+            break;
+        case POPM_OPCODE:
+        case POPRM_OPCODE:
+            if ((operand < 0) || ((int)operand >= ram.SIZE)) return ERR_INVALID_RAM_ADDRESS;
+            ram.setAt((int)operand, pop(&stack));
             break;
         default:
             return ERR_INVALID_OPERATION;
@@ -210,6 +232,7 @@ static byte assemble(FILE* input, FILE* output, LabelTable& labelTable) {
 
             // TODO: Clean up somehow
             char* operandToken = getNextToken(line);
+            if (asRamAccess(operandToken)) opcode |= IS_RAM_OP_MASK;
             if (getRegisterNumberByName(operandToken) != ERR_INVALID_REGISTER) {
                 opcode |= IS_REG_OP_MASK;
                 if (getOperationArityByOpcode(opcode) == ERR_INVALID_OPERATION) { statusCode = ERR_INVALID_OPERATION; break; }
@@ -257,7 +280,8 @@ static bool isError(byte opcode) {
            opcode == ERR_INVALID_REGISTER  ||
            opcode == ERR_STACK_UNDERFLOW   ||
            opcode == ERR_INVALID_LABEL     ||
-           opcode == ERR_INVALID_FILE;
+           opcode == ERR_INVALID_FILE      ||
+           opcode == ERR_INVALID_RAM_ADDRESS;
 }
 
 /**
@@ -337,7 +361,7 @@ int disassemble(const char* inputFileName, const char* outputFileName) {
             byte reg = asmReadRegister(input, currentByteOffset);
             const char* regName = getRegisterNameByNumber(reg);
             if (regName == nullptr) { statusCode = ERR_INVALID_REGISTER; break; }
-            disasmBuffer.writeRegister(regName);
+            disasmBuffer.writeRegister(regName, (opcode & IS_RAM_OP_MASK) != 0);
         } else if (getOperationArityByOpcode(opcode) == 1) {
             if (isJumpOperation(opcode)) {
                 int jumpByteOffset = asmReadJumpOffset(input, currentByteOffset);
@@ -348,7 +372,7 @@ int disassemble(const char* inputFileName, const char* outputFileName) {
             } else {
                 double operand = asmReadOperand(input, currentByteOffset);
                 if (!std::isfinite(operand)) { statusCode = ERR_INVALID_OPERATION; break; }
-                disasmBuffer.writeOperand(operand);
+                disasmBuffer.writeOperand(operand, (opcode & IS_RAM_OP_MASK) != 0);
             }
         }
 
@@ -371,7 +395,8 @@ int disassemble(const char* inputFileName, const char* outputFileName) {
  *         ERR_INVALID_OPERATION, if invalid operation was met;
  *         ERR_INVALID_REGISTER, if invalid register was met;
  *         ERR_STACK_UNDERFLOW, if pop operation was processed on empty stack;
- *         ERR_INVALID_FILE, if input file is invalid.
+ *         ERR_INVALID_FILE, if input file is invalid;
+ *         ERR_INVALID_RAM_ADDRESS, if address operand exceeds RAM size.
  */
 int run(const char* inputFileName) {
     assert(inputFileName != nullptr);

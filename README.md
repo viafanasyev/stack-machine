@@ -4,7 +4,7 @@
 
 This program is developed as a part of ISP RAS course.  
 
-This program contains a register stack machine. It can assemble, disassemble and run programs. 
+This program contains a register stack machine with RAM. It can assemble, disassemble and run programs. 
 See Run section to find available operations and examples.
 
 NOTE: This program works only on UNIX-like OS.
@@ -56,8 +56,12 @@ IN          # Read double value from console and put it on stack
 OUT         # Pop value from stack and write it in console
 POP         # Pop value from stack
 POP AX      # Pop value from stack and put it into register
+POP [1]     # Pop value from stack and put it into given RAM address
+POP [AX]    # Pop value from stack and put it into RAM address located in register
 PUSH 1.5    # Put the given value on top of the stack
 PUSH AX     # Put the value from register on top of the stack
+PUSH [1]    # Put the value from RAM (at the given address) on top of the stack
+PUSH [AX]   # Put the value from RAM (at the address located in register) on top of the stack
 ADD         # Pop two values from stack and put (lhs + rhs) on top of the stack
 SUB         # Pop two values from stack and put (lhs - rhs) on top of the stack
 MUL         # Pop two values from stack and put (lhs * rhs) on top of the stack
@@ -135,6 +139,58 @@ ADD
 DUP
 ADD
 RET
+```
+
+Example program 5 (RAM access demonstration):
+```
+    CALL INIT       <-- Init array with zeros
+LOOP_START:
+    IN              <-- Read index of an array
+    POP AX
+    PUSH AX
+    PUSH 0
+    JMPL LOOP_END   <--| If index exceeds an array size (< 0 or >= 5) - exit from program
+    PUSH AX            |
+    PUSH 5             |
+    JMPGE LOOP_END  <--|
+    IN              <-- Read new value for array element
+    POP BX
+    CALL SET        <-- Set new value
+    CALL PRINT      <-- Print array
+    JMP LOOP_START
+LOOP_END:
+    HLT
+
+SET:
+    PUSH BX
+    POP [AX]
+    RET
+
+INIT:
+    PUSH 0
+    POP [0]
+    PUSH 0
+    POP [1]
+    PUSH 0
+    POP [2]
+    PUSH 0
+    POP [3]
+    PUSH 0
+    POP [4]
+    RET
+
+PRINT:
+    PUSH [0]
+    OUT
+    PUSH [1]
+    OUT
+    PUSH [2]
+    OUT
+    PUSH [3]
+    OUT
+    PUSH [4]
+    OUT
+    RET
 ```
 
 All examples can be found in `examples` directory.

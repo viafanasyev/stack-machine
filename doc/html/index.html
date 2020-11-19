@@ -69,7 +69,7 @@ $(function() {
 Project description</h1>
 <p>This program is developed as a part of ISP RAS course. <br  />
 </p>
-<p>This program contains a register stack machine. It can assemble, disassemble and run programs. See Run section to find available operations and examples.</p>
+<p>This program contains a register stack machine with <a class="el" href="class_r_a_m.html">RAM</a>. It can assemble, disassemble and run programs. See Run section to find available operations and examples.</p>
 <p>NOTE: This program works only on UNIX-like OS.</p>
 <h2><a class="anchor" id="autotoc_md2"></a>
 Structure</h2>
@@ -114,8 +114,12 @@ Available operations</h4>
 <div class="line">OUT         # Pop value from stack and write it in console</div>
 <div class="line">POP         # Pop value from stack</div>
 <div class="line">POP AX      # Pop value from stack and put it into register</div>
+<div class="line">POP [1]     # Pop value from stack and put it into given RAM address</div>
+<div class="line">POP [AX]    # Pop value from stack and put it into RAM address located in register</div>
 <div class="line">PUSH 1.5    # Put the given value on top of the stack</div>
 <div class="line">PUSH AX     # Put the value from register on top of the stack</div>
+<div class="line">PUSH [1]    # Put the value from RAM (at the given address) on top of the stack</div>
+<div class="line">PUSH [AX]   # Put the value from RAM (at the address located in register) on top of the stack</div>
 <div class="line">ADD         # Pop two values from stack and put (lhs + rhs) on top of the stack</div>
 <div class="line">SUB         # Pop two values from stack and put (lhs - rhs) on top of the stack</div>
 <div class="line">MUL         # Pop two values from stack and put (lhs * rhs) on top of the stack</div>
@@ -176,6 +180,54 @@ Examples</h4>
 <div class="line">DUP</div>
 <div class="line">ADD</div>
 <div class="line">RET</div>
+</div><!-- fragment --><p>Example program 5 (<a class="el" href="class_r_a_m.html">RAM</a> access demonstration): </p><div class="fragment"><div class="line">    CALL INIT       &lt;-- Init array with zeros</div>
+<div class="line">LOOP_START:</div>
+<div class="line">    IN              &lt;-- Read index of an array</div>
+<div class="line">    POP AX</div>
+<div class="line">    PUSH AX</div>
+<div class="line">    PUSH 0</div>
+<div class="line">    JMPL LOOP_END   &lt;--| If index exceeds an array size (&lt; 0 or &gt;= 5) - exit from program</div>
+<div class="line">    PUSH AX            |</div>
+<div class="line">    PUSH 5             |</div>
+<div class="line">    JMPGE LOOP_END  &lt;--|</div>
+<div class="line">    IN              &lt;-- Read new value for array element</div>
+<div class="line">    POP BX</div>
+<div class="line">    CALL SET        &lt;-- Set new value</div>
+<div class="line">    CALL PRINT      &lt;-- Print array</div>
+<div class="line">    JMP LOOP_START</div>
+<div class="line">LOOP_END:</div>
+<div class="line">    HLT</div>
+<div class="line"> </div>
+<div class="line">SET:</div>
+<div class="line">    PUSH BX</div>
+<div class="line">    POP [AX]</div>
+<div class="line">    RET</div>
+<div class="line"> </div>
+<div class="line">INIT:</div>
+<div class="line">    PUSH 0</div>
+<div class="line">    POP [0]</div>
+<div class="line">    PUSH 0</div>
+<div class="line">    POP [1]</div>
+<div class="line">    PUSH 0</div>
+<div class="line">    POP [2]</div>
+<div class="line">    PUSH 0</div>
+<div class="line">    POP [3]</div>
+<div class="line">    PUSH 0</div>
+<div class="line">    POP [4]</div>
+<div class="line">    RET</div>
+<div class="line"> </div>
+<div class="line">PRINT:</div>
+<div class="line">    PUSH [0]</div>
+<div class="line">    OUT</div>
+<div class="line">    PUSH [1]</div>
+<div class="line">    OUT</div>
+<div class="line">    PUSH [2]</div>
+<div class="line">    OUT</div>
+<div class="line">    PUSH [3]</div>
+<div class="line">    OUT</div>
+<div class="line">    PUSH [4]</div>
+<div class="line">    OUT</div>
+<div class="line">    RET</div>
 </div><!-- fragment --><p>All examples can be found in <code>examples</code> directory.</p>
 <h3><a class="anchor" id="autotoc_md7"></a>
 Tests</h3>

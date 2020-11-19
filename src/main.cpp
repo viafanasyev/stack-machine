@@ -151,6 +151,8 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, "Invalid label\n");
     } else if (exitCode == ERR_INVALID_FILE) {
         fprintf(stderr, "Invalid file name or path\n");
+    } else if (exitCode == ERR_INVALID_RAM_ADDRESS) {
+        fprintf(stderr, "Invalid RAM address\n");
     }
 
     return exitCode;

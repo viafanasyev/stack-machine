@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['disassemblybuffer_81',['DisassemblyBuffer',['../class_disassembly_buffer.html',1,'']]],
-  ['doubleasbytes_82',['doubleAsBytes',['../uniondouble_as_bytes.html',1,'']]]
+  ['controller_94',['Controller',['../class_controller.html',1,'']]],
+  ['cpu_95',['CPU',['../class_c_p_u.html',1,'']]]
 ];

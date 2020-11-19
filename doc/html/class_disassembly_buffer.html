@@ -75,10 +75,10 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab4f9ccbfa5e11b2654c829de00017191"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_disassembly_buffer.html#ab4f9ccbfa5e11b2654c829de00017191">writeOperation</a> (const char *operation)</td></tr>
 <tr class="separator:ab4f9ccbfa5e11b2654c829de00017191"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9083b4a7cb82f7832cc4653bcbb62ec8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_disassembly_buffer.html#a9083b4a7cb82f7832cc4653bcbb62ec8">writeOperand</a> (double operand)</td></tr>
-<tr class="separator:a9083b4a7cb82f7832cc4653bcbb62ec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2efb5ce8965a1be6b47ae85980e6a59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_disassembly_buffer.html#ae2efb5ce8965a1be6b47ae85980e6a59">writeRegister</a> (const char *regName)</td></tr>
-<tr class="separator:ae2efb5ce8965a1be6b47ae85980e6a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5884f3ef5b49e13e2c3312021719bd9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_disassembly_buffer.html#a5884f3ef5b49e13e2c3312021719bd9e">writeOperand</a> (double operand, bool isRamOperation)</td></tr>
+<tr class="separator:a5884f3ef5b49e13e2c3312021719bd9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfefcdf6f4cdd6d4aece5fcf6b6a49c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_disassembly_buffer.html#adfefcdf6f4cdd6d4aece5fcf6b6a49c7">writeRegister</a> (const char *regName, bool isRamOperation)</td></tr>
+<tr class="separator:adfefcdf6f4cdd6d4aece5fcf6b6a49c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45fbc61fdedca9994ef9807088050c21"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_disassembly_buffer.html#a45fbc61fdedca9994ef9807088050c21">writeJumpLabelArgument</a> (int labelOffset)</td></tr>
 <tr class="separator:a45fbc61fdedca9994ef9807088050c21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae035c854e85ef779dc98fa59de18c9ea"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_disassembly_buffer.html#ae035c854e85ef779dc98fa59de18c9ea">getLabelByOffset</a> (int labelOffset)</td></tr>
@@ -163,8 +163,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a9083b4a7cb82f7832cc4653bcbb62ec8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9083b4a7cb82f7832cc4653bcbb62ec8">&#9670;&nbsp;</a></span>writeOperand()</h2>
+<a id="a5884f3ef5b49e13e2c3312021719bd9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5884f3ef5b49e13e2c3312021719bd9e">&#9670;&nbsp;</a></span>writeOperand()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -173,14 +173,31 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void DisassemblyBuffer::writeOperand </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>operand</em></td><td>)</td>
+          <td class="paramname"><em>operand</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isRamOperation</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Writes double operand into the disassembly buffer. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">operand</td><td>operand to write</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Writes double operand into the disassembly buffer. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">operand</td><td>operand to write </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">isRamOperation</td><td>shows if an operand is a <a class="el" href="class_r_a_m.html">RAM</a> address </td></tr>
   </table>
   </dd>
 </dl>
@@ -211,8 +228,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae2efb5ce8965a1be6b47ae85980e6a59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2efb5ce8965a1be6b47ae85980e6a59">&#9670;&nbsp;</a></span>writeRegister()</h2>
+<a id="adfefcdf6f4cdd6d4aece5fcf6b6a49c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfefcdf6f4cdd6d4aece5fcf6b6a49c7">&#9670;&nbsp;</a></span>writeRegister()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -221,14 +238,31 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void DisassemblyBuffer::writeRegister </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>regName</em></td><td>)</td>
+          <td class="paramname"><em>regName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isRamOperation</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Writes register name into the disassembly buffer. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">regName</td><td>register name to write</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Writes register name into the disassembly buffer. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">regName</td><td>register name to write </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">isRamOperation</td><td>shows if an operand is a <a class="el" href="class_r_a_m.html">RAM</a> address </td></tr>
   </table>
   </dd>
 </dl>

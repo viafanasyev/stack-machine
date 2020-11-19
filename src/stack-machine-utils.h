@@ -43,12 +43,18 @@
 #define ERR_STACK_UNDERFLOW     0b11111101u
 #define ERR_INVALID_LABEL       0b11111100u
 #define ERR_INVALID_FILE        0b11111011u
+#define ERR_INVALID_RAM_ADDRESS 0b11111010u
 
 #define REGISTERS_NUMBER 4u
 #define IS_REG_OP_MASK 0b10000000u
+#define IS_RAM_OP_MASK 0b01000000u
 
-#define PUSHR_OPCODE (PUSH_OPCODE | IS_REG_OP_MASK)
-#define POPR_OPCODE  (POP_OPCODE  | IS_REG_OP_MASK)
+#define PUSHR_OPCODE  (PUSH_OPCODE | IS_REG_OP_MASK)
+#define PUSHM_OPCODE  (PUSH_OPCODE | IS_RAM_OP_MASK)
+#define PUSHRM_OPCODE (PUSH_OPCODE | IS_REG_OP_MASK | IS_RAM_OP_MASK)
+#define POPR_OPCODE   (POP_OPCODE  | IS_REG_OP_MASK)
+#define POPM_OPCODE   (POP_OPCODE  | IS_RAM_OP_MASK)
+#define POPRM_OPCODE  (POP_OPCODE  | IS_REG_OP_MASK | IS_RAM_OP_MASK)
 
 #define COMPARE_EPS 1e-9
 
@@ -195,13 +201,13 @@ public:
      * Writes double operand into the disassembly buffer.
      * @param[in] operand operand to write
      */
-    void writeOperand(double operand);
+    void writeOperand(double operand, bool isRamOperation);
 
     /**
      * Writes register name into the disassembly buffer.
      * @param[in] regName register name to write
      */
-    void writeRegister(const char* regName);
+    void writeRegister(const char* regName, bool isRamOperation);
 
     /**
      * Creates and writes jump label (as argument of JMP or similar operation) into the disassembly buffer.
@@ -297,6 +303,14 @@ unsigned char parseRegister(char*& line);
  * @return true, if the given token is a label, false otherwise.
  */
 bool isLabel(const char* token);
+
+/**
+ * Checks if the given token is a RAM access token (bounded with '[' and ']').
+ * If so, converts token to the token between braces.
+ * @param[in, out] token token to check
+ * @return true, if the given token is a RAM access token, false otherwise.
+ */
+bool asRamAccess(char*& token);
 
 /**
  * Checks if the give opcode is the jump operation.

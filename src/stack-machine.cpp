@@ -315,6 +315,7 @@ int assemble(const char* inputFileName, const char* outputFileName) {
     FILE* input  = fopen(inputFileName,  "r");
     if (input == nullptr) return ERR_INVALID_FILE;
     FILE* output = fopen(outputFileName, "wb");
+    if (output == nullptr) return ERR_INVALID_FILE;
 
     LabelTable labelTable;
     byte statusCode = resolveLabels(input, labelTable);
@@ -345,6 +346,7 @@ int disassemble(const char* inputFileName, const char* outputFileName) {
     FILE* input  = fopen(inputFileName,  "rb");
     if (input == nullptr) return ERR_INVALID_FILE;
     FILE* output = fopen(outputFileName, "w");
+    if (output == nullptr) return ERR_INVALID_FILE;
 
     byte statusCode = 0;
 

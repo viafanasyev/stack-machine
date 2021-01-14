@@ -382,4 +382,9 @@ void asmWrite(FILE* output, double value, int& currentByteOffset);
  */
 void asmWrite(FILE* output, int value, int& currentByteOffset);
 
+/**
+ * Prints an error message into stderr for a given exit code returned by one of the stack machine functions.
+ */
+void printErrorMessageForExitCode(int exitCode);
+
 #endif // STACK_MACHINE_STACK_MACHINE_UTILS_H

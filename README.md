@@ -12,13 +12,16 @@ NOTE: This program works only on UNIX-like OS.
 ### Structure
 
 * src/ : Main project
+    * arg-parser.h, arg-parser.cpp : Helper functions for input arguments parsing
     * immortal-stack/ : Error-secure generic stack used in stack machine
         * stack.h : Definition and implementation of error-secure generic stack.
         * logger.h : Definition and implementation of logging functions and macros.
         * environment.h : Helper macros that are environment-dependent (OS, bitness, etc).
     * stack-machine.h, stack-machine.cpp : Simple stack machine implementation with ability to assemble, disassemble and run programs.
     * stack-machine-utils.h, stack-machine-utils.cpp : Helper functions for stack machine. Also contains used opcodes and errors.
-    * main.cpp : Entry point for the program.
+    * main-asm.cpp    : Entry point for the assembler.
+    * main-disasm.cpp : Entry point for the disassembler.
+    * main-run.cpp    : Entry point for the stack machine.
 
 * test/ : Tests and testing library
     * testlib.h, testlib.cpp : Library for testing with assertions and helper macros.
@@ -33,24 +36,35 @@ NOTE: This program works only on UNIX-like OS.
 
 ### Run
 
-#### Stack machine
+#### Assembler
 
-To run main program execute next commands in terminal:
+To run assembler execute next commands in terminal:
 ```shell script
 cmake . && make
-./stack-machine --help                          # To see help
-./stack-machine --asm file.txt                  # To assemble file with code. Result is put in file.asm
-./stack-machine --asm file1.txt -o file2.asm    # To assemble file with code. Result is put in file2.asm
-./stack-machine --disasm file.asm               # To disassemble asm file. Result is put in file__disassembly.txt
-./stack-machine --disasm file1.asm -o file2.txt # To disassemble asm file. Result is put in file2.txt
-./stack-machine --run file.asm                  # To run asm file
+./asm file.txt               # To assemble file.txt. Result is put in file.asm
+./asm file1.txt file2.asm    # To assemble file1.txt. Result is put in file2.asm
 ```
 
-Only one --asm, --disasm, --run option could be used at the time.
+#### Disassembler
+
+To run disassembler execute next commands in terminal:
+```shell script
+cmake . && make
+./disasm file.asm            # To disassemble file.asm. Result is put in file__disassembly.txt
+./disasm file1.asm file2.txt # To disassemble file1.asm. Result is put in file2.txt
+```
+
+#### Stack machine
+
+To run stack machine execute next commands in terminal:
+```shell script
+cmake . && make
+./run file.asm               # To run file.asm
+```
 
 ##### Available operations
 
-File with code can contain next operations:
+Assembly file can contain next operations:
 ```
 IN          # Read double value from console and put it on stack
 OUT         # Pop value from stack and write it in console
@@ -198,7 +212,7 @@ All examples can be found in `examples` directory.
 #### Tests
 
 To run tests execute next commands in terminal:
-```
+```shell script
 cmake . && make
 ./tests
 ```

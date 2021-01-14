@@ -75,6 +75,7 @@ Project description</h1>
 Structure</h2>
 <ul>
 <li>src/ : Main project<ul>
+<li><a class="el" href="arg-parser_8h.html" title="Definition of helper functions for input arguments parsing.">arg-parser.h</a>, <a class="el" href="arg-parser_8cpp.html" title="Implementation of helper functions for input arguments parsing.">arg-parser.cpp</a> : Helper functions for input arguments parsing</li>
 <li>immortal-stack/ : Error-secure generic stack used in stack machine<ul>
 <li><a class="el" href="stack_8h.html" title="Definition and implementation of generic stack.">stack.h</a> : Definition and implementation of error-secure generic stack.</li>
 <li><a class="el" href="logger_8h.html" title="Definition and implementation of logging functions and macros.">logger.h</a> : Definition and implementation of logging functions and macros.</li>
@@ -83,13 +84,15 @@ Structure</h2>
 </li>
 <li><a class="el" href="stack-machine_8h.html" title="Declaration of stack machine functions.">stack-machine.h</a>, <a class="el" href="stack-machine_8cpp.html" title="Implementation of stack machine functions.">stack-machine.cpp</a> : Simple stack machine implementation with ability to assemble, disassemble and run programs.</li>
 <li><a class="el" href="stack-machine-utils_8h.html" title="Declaration of stack machine helper functions and opcodes and errors.">stack-machine-utils.h</a>, <a class="el" href="stack-machine-utils_8cpp.html" title="Implementation of stack machine helper functions.">stack-machine-utils.cpp</a> : Helper functions for stack machine. Also contains used opcodes and errors.</li>
-<li>main.cpp : Entry point for the program.</li>
+<li><a class="el" href="main-asm_8cpp.html">main-asm.cpp</a> : Entry point for the assembler.</li>
+<li><a class="el" href="main-disasm_8cpp.html">main-disasm.cpp</a> : Entry point for the disassembler.</li>
+<li><a class="el" href="main-run_8cpp.html">main-run.cpp</a> : Entry point for the stack machine.</li>
 </ul>
 </li>
 <li>test/ : Tests and testing library<ul>
 <li><a class="el" href="testlib_8h.html" title="Header file with testlib description.">testlib.h</a>, <a class="el" href="testlib_8cpp.html" title="Source file with testlib implementation.">testlib.cpp</a> : Library for testing with assertions and helper macros.</li>
 <li><a class="el" href="stack-machine-tests_8cpp.html">stack-machine-tests.cpp</a> : Tests for stack machine.</li>
-<li>main.cpp : Entry point for tests. Just runs all tests.</li>
+<li><a class="el" href="main_8cpp.html">main.cpp</a> : Entry point for tests. Just runs all tests.</li>
 </ul>
 </li>
 <li>examples/ : Files with code of examples given below</li>
@@ -99,18 +102,22 @@ Structure</h2>
 <h2><a class="anchor" id="autotoc_md3"></a>
 Run</h2>
 <h3><a class="anchor" id="autotoc_md4"></a>
+Assembler</h3>
+<p>To run assembler execute next commands in terminal: </p><div class="fragment"><div class="line">cmake . &amp;&amp; make</div>
+<div class="line">./asm file.txt               # To assemble file.txt. Result is put in file.asm</div>
+<div class="line">./asm file1.txt file2.asm    # To assemble file1.txt. Result is put in file2.asm</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md5"></a>
+Disassembler</h3>
+<p>To run disassembler execute next commands in terminal: </p><div class="fragment"><div class="line">cmake . &amp;&amp; make</div>
+<div class="line">./disasm file.asm            # To disassemble file.asm. Result is put in file__disassembly.txt</div>
+<div class="line">./disasm file1.asm file2.txt # To disassemble file1.asm. Result is put in file2.txt</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md6"></a>
 Stack machine</h3>
-<p>To run main program execute next commands in terminal: </p><div class="fragment"><div class="line">cmake . &amp;&amp; make</div>
-<div class="line">./stack-machine --help                          # To see help</div>
-<div class="line">./stack-machine --asm file.txt                  # To assemble file with code. Result is put in file.asm</div>
-<div class="line">./stack-machine --asm file1.txt -o file2.asm    # To assemble file with code. Result is put in file2.asm</div>
-<div class="line">./stack-machine --disasm file.asm               # To disassemble asm file. Result is put in file__disassembly.txt</div>
-<div class="line">./stack-machine --disasm file1.asm -o file2.txt # To disassemble asm file. Result is put in file2.txt</div>
-<div class="line">./stack-machine --run file.asm                  # To run asm file</div>
-</div><!-- fragment --><p>Only one &ndash;asm, &ndash;disasm, &ndash;run option could be used at the time.</p>
-<h4><a class="anchor" id="autotoc_md5"></a>
+<p>To run stack machine execute next commands in terminal: </p><div class="fragment"><div class="line">cmake . &amp;&amp; make</div>
+<div class="line">./run file.asm               # To run file.asm</div>
+</div><!-- fragment --><h4><a class="anchor" id="autotoc_md7"></a>
 Available operations</h4>
-<p>File with code can contain next operations: </p><div class="fragment"><div class="line">IN          # Read double value from console and put it on stack</div>
+<p>Assembly file can contain next operations: </p><div class="fragment"><div class="line">IN          # Read double value from console and put it on stack</div>
 <div class="line">OUT         # Pop value from stack and write it in console</div>
 <div class="line">POP         # Pop value from stack</div>
 <div class="line">POP AX      # Pop value from stack and put it into register</div>
@@ -145,7 +152,7 @@ Available operations</h4>
 <p>Possible registers: <code>AX</code>, <code>BX</code>, <code>CX</code>, <code>DX</code>. <br  />
 </p>
 <p>Labels have to be written on separate lines, can not contain spaces and must end with <code>:</code> symbol. Example: <code>START:</code> (see more examples below).</p>
-<h4><a class="anchor" id="autotoc_md6"></a>
+<h4><a class="anchor" id="autotoc_md8"></a>
 Examples</h4>
 <p>Example program 1 (square root of sum): </p><div class="fragment"><div class="line">IN</div>
 <div class="line">IN</div>
@@ -229,15 +236,15 @@ Examples</h4>
 <div class="line">    OUT</div>
 <div class="line">    RET</div>
 </div><!-- fragment --><p>All examples can be found in <code>examples</code> directory.</p>
-<h3><a class="anchor" id="autotoc_md7"></a>
+<h3><a class="anchor" id="autotoc_md9"></a>
 Tests</h3>
 <p>To run tests execute next commands in terminal: </p><div class="fragment"><div class="line">cmake . &amp;&amp; make</div>
 <div class="line">./tests</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
 Documentation</h2>
 <p>Doxygen is used to create documentation. You can watch it by opening <code>doc/html/index.html</code> in browser. <br  />
 </p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 OS</h2>
 <p>Program is developed under Ubuntu 20.04.1 LTS. </p>
 </div></div><!-- PageDoc -->

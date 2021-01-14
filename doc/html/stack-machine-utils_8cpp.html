@@ -138,6 +138,8 @@ Functions</h2></td></tr>
 <tr class="separator:aca7d6bd5b51771d46ed1e17c1d9abc65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a598c75948490fc29d0004023eb434a66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#a598c75948490fc29d0004023eb434a66">asmWrite</a> (FILE *output, int value, int &amp;currentByteOffset)</td></tr>
 <tr class="separator:a598c75948490fc29d0004023eb434a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2e59fefb0712b3c168eea9af0f989aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stack-machine-utils_8cpp.html#ae2e59fefb0712b3c168eea9af0f989aa">printErrorMessageForExitCode</a> (int exitCode)</td></tr>
+<tr class="separator:ae2e59fefb0712b3c168eea9af0f989aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implementation of stack machine helper functions. </p>
@@ -709,6 +711,25 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>parsed register number, or ERR_INVALID_REGISTER if register is invalid. </dd></dl>
+
+</div>
+</div>
+<a id="ae2e59fefb0712b3c168eea9af0f989aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2e59fefb0712b3c168eea9af0f989aa">&#9670;&nbsp;</a></span>printErrorMessageForExitCode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void printErrorMessageForExitCode </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>exitCode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Prints an error message into stderr for a given exit code returned by one of the stack machine functions. </p>
 
 </div>
 </div>

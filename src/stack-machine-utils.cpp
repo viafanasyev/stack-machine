@@ -696,3 +696,22 @@ void asmWrite(FILE* output, int value, int& currentByteOffset) {
         }
     }
 }
+
+/**
+ * Prints an error message into stderr for a given exit code returned by one of the stack machine functions.
+ */
+void printErrorMessageForExitCode(int exitCode) {
+    if (exitCode == ERR_INVALID_OPERATION) {
+        fprintf(stderr, "Invalid operation met\n");
+    } else if (exitCode == ERR_INVALID_REGISTER) {
+        fprintf(stderr, "Invalid register met\n");
+    } else if (exitCode == ERR_STACK_UNDERFLOW) {
+        fprintf(stderr, "Stack underflow\n");
+    } else if (exitCode == ERR_INVALID_LABEL) {
+        fprintf(stderr, "Invalid label\n");
+    } else if (exitCode == ERR_INVALID_FILE) {
+        fprintf(stderr, "Invalid file name or path\n");
+    } else if (exitCode == ERR_INVALID_RAM_ADDRESS) {
+        fprintf(stderr, "Invalid RAM address\n");
+    }
+}

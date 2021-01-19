@@ -23,11 +23,11 @@ public:
     static constexpr int SIZE = 1024;
     static constexpr __useconds_t DELAY_MICROSECONDS = 10000; // 0.01 seconds
 protected:
-    unsigned char memory[SIZE];
+    double memory[SIZE];
 
 public:
-    unsigned char getAt(int pos) const;
-    void setAt(int pos, unsigned char value);
+    double getAt(int pos) const;
+    void setAt(int pos, double value);
 };
 
 class StackMachine : public AssemblyMachine {

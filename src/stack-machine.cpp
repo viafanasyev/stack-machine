@@ -12,14 +12,28 @@
 
 using byte = unsigned char;
 
-byte RAM::getAt(int pos) const {
+union doubleAsBytes {
+    double doubleValue;
+    byte bytes[sizeof(double)];
+};
+
+double RAM::getAt(int pos) const {
     usleep(DELAY_MICROSECONDS);
-    return memory[pos];
+    doubleAsBytes doubleBytes { 0 };
+    for (byte& b : doubleBytes.bytes) {
+        b = memory[pos];
+        pos += sizeof(byte);
+    }
+    return doubleBytes.doubleValue;
 }
 
-void RAM::setAt(int pos, byte value) {
+void RAM::setAt(int pos, double value) {
     usleep(DELAY_MICROSECONDS);
-    memory[pos] = value;
+    doubleAsBytes doubleBytes { value };
+    for (byte b : doubleBytes.bytes) {
+        memory[pos] = b;
+        pos += sizeof(byte);
+    }
 }
 
 StackMachine::StackMachine(const char* assemblyFileName) : AssemblyMachine(assemblyFileName) {

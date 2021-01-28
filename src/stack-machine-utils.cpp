@@ -325,6 +325,7 @@ byte getOpcodeByOperationName(const char* operation) {
     if (strcmp(operation, "DIV"  ) == 0) return DIV_OPCODE  ;
     if (strcmp(operation, "SQRT" ) == 0) return SQRT_OPCODE ;
     if (strcmp(operation, "DUP"  ) == 0) return DUP_OPCODE  ;
+    if (strcmp(operation, "POW"  ) == 0) return POW_OPCODE  ;
     if (strcmp(operation, "HLT"  ) == 0) return HLT_OPCODE  ;
     if (strcmp(operation, "JMP"  ) == 0) return JMP_OPCODE  ;
     if (strcmp(operation, "JMPNE") == 0) return JMPNE_OPCODE;
@@ -355,6 +356,7 @@ const char* getOperationNameByOpcode(byte opcode) {
         case DIV_OPCODE:   return "DIV"  ;
         case SQRT_OPCODE:  return "SQRT" ;
         case DUP_OPCODE:   return "DUP"  ;
+        case POW_OPCODE:   return "POW"  ;
         case HLT_OPCODE:   return "HLT"  ;
         case JMP_OPCODE:   return "JMP"  ;
         case JMPNE_OPCODE: return "JMPNE";
@@ -385,6 +387,7 @@ byte getOperationArityByOpcode(byte opcode) {
         case DIV_OPCODE:
         case SQRT_OPCODE:
         case DUP_OPCODE:
+        case POW_OPCODE:
         case RET_OPCODE:
         case HLT_OPCODE:
             return 0;

@@ -82,6 +82,7 @@ MUL         # Pop two values from stack and put (lhs * rhs) on top of the stack
 DIV         # Pop two values from stack and put (lhs / rhs) on top of the stack
 SQRT        # Pop one value from stack and put the square root on top of the stack
 DUP         # Duplicates value on top of the stack
+POW         # Pop two values from stack and put pow(lhs, rhs) on top of the stack
 JMP LABEL   # Unconditional jump to the given label
 JMPE LABEL  # Pop two values from the stack and jump to the given label if (lhs == rhs) (compared using 1e-9 epsilon)
 JMPNE LABEL # Pop two values from the stack and jump to the given label if (lhs != rhs) (compared using 1e-9 epsilon)

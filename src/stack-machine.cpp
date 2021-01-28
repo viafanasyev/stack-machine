@@ -106,6 +106,12 @@ byte StackMachine::processOperation(byte opcode) {
         if (getStackSize(&stack) < 1) return ERR_STACK_UNDERFLOW;
 
         push(&stack, top(&stack));
+    } else if (opcode == POW_OPCODE) {
+        if (getStackSize(&stack) < 2) return ERR_STACK_UNDERFLOW;
+
+        double rhs = pop(&stack);
+        double lhs = pop(&stack);
+        push(&stack, pow(lhs, rhs));
     } else if (opcode == RET_OPCODE) {
         if (getStackSize(&callStack) < 1) return ERR_STACK_UNDERFLOW;
 
